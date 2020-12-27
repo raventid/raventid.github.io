@@ -1,8 +1,8 @@
 @font-face {
-  font-family: "JetBrains Mono";
+  font-family: "JetBrainsMono";
   src: url("assets/fonts/JetBrainsMono-Regular.woff");
 }
 
 html {
-    font-family: "JetBrains Mono";
+    font-family: "JetBrainsMono";
 }
