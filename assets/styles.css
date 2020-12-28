@@ -23,5 +23,9 @@ html {
     "content content";
 }
 .content { grid-area: content; }
-.logo { grid-area: logo; }
+.logo {
+   grid-area: logo;
+   width: 100px;
+   height: 100px;
+}
 .title { grid-area: title; }
