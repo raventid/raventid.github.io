@@ -6,3 +6,8 @@
 html {
     font-family: "JetBrainsMono";
 }
+
+.tag {
+   border-radius: 50px;
+   background: #8bbcbc;
+}
