@@ -27,5 +27,6 @@ html {
    grid-area: logo;
    width: 100px;
    height: 100px;
+   object-fit: contain;
 }
 .title { grid-area: title; }
