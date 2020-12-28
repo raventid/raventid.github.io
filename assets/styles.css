@@ -12,3 +12,16 @@ html {
    border-radius: 50px;
    background: #8bbcbc;
 }
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0px 0px;
+  grid-template-areas:
+    "logo title"
+    "content content";
+}
+.content { grid-area: content; }
+.logo { grid-area: logo; }
+.title { grid-area: title; }
