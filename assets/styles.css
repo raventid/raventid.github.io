@@ -23,10 +23,11 @@ html {
     "content content";
 }
 .content { grid-area: content; }
-.logo {
-   grid-area: logo;
-   width: 100px;
-   height: 100px;
-   object-fit: contain;
-}
+.logo { grid-area: logo; }
 .title { grid-area: title; }
+
+img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+}
