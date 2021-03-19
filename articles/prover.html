@@ -30,7 +30,16 @@ In this article I would list some of proof assitants and theorem provers and wil
 
 <div>
   <h3>Coq</h3>
-  <p>Most widely used and established technology. Has a lot of great literature dedicated to it</p>
+  <p>
+    Most widely used and established technology. Has a lot of great literature dedicated to it. (Link logical foundation)
+  </p>
+  <p>
+    <code>
+      Theorem plus_O_n : forall n : nat, 0 + n = n.
+      Proof.
+        intros n. simpl. reflexivity.  Qed.
+    </code>
+  </p>
 </div>
 
 <div>
