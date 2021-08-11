@@ -43,16 +43,22 @@ This is a totally fine code in Rust
 By writing more and more code in this style you'll find it more and more comfortable. It would become your second nature. See some Enumeration? Create enum and create match when you need to work with an instance of this type.
 Now, imagine that your are comming back to Java with this skills and habbits. What are you gonna do? The first thought is to just do the same thing!
 
+<pre>
 class Result {
 }
 
 class Some extends Result {}
 class None extends Result {}
 
-fn check(Result r) {
-  if r instanceof Some
-  if r instanceof None
+bool check(Result r) {
+  if r instanceof Some { return true; }
+  if r instanceof None { return false; }
 }
+</pre>
+
+Well, it looks like your instinct failed you now. Any Java developer would be very suprprised if they see it. You are just following the patterns in your head, but you cannot perfectly port programm from one language to another without analysis. It is the same thing with real languages. Do you know a lot of people who speak perfect and idiomatic English and 12 other languages? I know polyglots exist, but the question is - are you one of them? And in the same a lot of people only know one language (mother tongue) and they are fluent and perfect within this lagnuage. And you know what makes their skills better? Learning new language? I'm not sure. But what I'm sure about is that if you learn more infromation and stufy biology, natural science, read classical literature - you enrich your language, make it beatiful and fluent. You can do the same for your programming skills. Write as many different applications (parsers, websites, cli tools, datascience, algorithms) as you can and you will make your language perfect.
+
+You can argue and say that I'm not right. Natural languages are equivalent and programming languages are not. This is true, but let me clarify few moments here and tell you that sometimes you should definitely choose other programming language or ask someone to help you with translation.
 
 
 </p>
