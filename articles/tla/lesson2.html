@@ -56,10 +56,11 @@
         {TRUE, FALSE} \X {TRUE, FALSE}
         </p>
 
-        Let's rewrite it in this way to make a binding called c - stands for cartesian
+        Let's rewrite it in this way to make a binding called values. This is another way to construct a cartesian product, but this time we will add logical
+        conjunction to every value. This way we can elegantly build a truth table for any operation.
         <p>
-        LET c == {TRUE, FALSE} \X {TRUE, FALSE}
-        IN c
+            LET values == {TRUE, FALSE}
+            IN { <<a, b, a /\ b>> : a \in values, b \in values }
         </p>
 
     </body>
