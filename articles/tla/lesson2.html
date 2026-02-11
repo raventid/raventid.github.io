@@ -78,5 +78,32 @@
             LET values == {TRUE, FALSE}
             IN { <<a, ~a>> : a \in values }
         </p>
+
+
+        <p>
+            IMPORTANT: Even if I say now that TLA+ is easier than programming you might not believe, and if you are comming from a programming background you might still think in terms
+            of execution of a program, how to write loops and how to write ifs.
+
+            This is not how specification works, the deep insight is to embrace it's simplicity
+
+            Init == state = 0
+            
+            A == /\ enabling_condition_1
+                /\ state' = -1
+
+            B == /\ enabling_condition_2
+                /\ state' = 1
+
+            Next == A \/ B
+
+            Looking at this text you might think that this spec has an execution order, Next call A or B, B call enabling_condition_2 etc.
+            This is a wrong way to think about spec if you want to construct a logical spec. It is simpler. I am not lying.
+
+            What is written here have no order. There is no evaluation here. This is formula.
+
+            We say that when system goes forward in time Next is valid. Next is either A or B. A might be true, B might be true.
+            A and B are not functions, they are a part of a big formula. It is really hard to explain with words, but try to meditate on this.
+            If you can iternilize this idea - you mastered one of the hard parts of TLA+ (the other hard part you will find in the future)
+        </p>
     </body>
 </html>
