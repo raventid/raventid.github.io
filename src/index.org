@@ -1,0 +1,29 @@
+#+title: @raventid's weblog
+#+description: Weblog of raventid — programming languages, formal methods and other beautiful things.
+#+options: title:nil
+
+#+begin_export html
+<div class="masthead">
+  <img class="site-logo" src="/assets/raven.jpg" alt="raven logo" width="400" height="400" />
+  <h1 class="title">@raventid&rsquo;s weblog</h1>
+</div>
+#+end_export
+
+Hi, my dear friend. I am raventid. I call myself an artist, as I persive life and living as a form of art. Check out [[file:about.org][about me.]]
+
+These pages are woven from plain-text Org files by GNU Emacs and org-publish --- prose, code and mathematics all live in the same format. (I once decided to autogenerate this website with my own static site generator written in a research programming language ([[https://www.cs.bu.edu/~hwxi/atslangweb/][ATS]]). It is still a work in progress, so Emacs got there first. Hopefully I will catch up very soon. Hahahaha, sure.)
+
+This website is JavaScript free ❤️ (well, almost: pages with mathematics load MathJax, and nothing else).
+
+I used to say it is also does not depend on any M$ tech, but it is hosted on github.com now. Though it looks like younger generation does not perceive M$ as something bad anymore. I miss those times of childish wars "what programming language is the best?", "we will destory your company with our hacking!!!" Modern world is about practical things and money.
+
+* Articles
+
+- [[file:articles/prover.org][Theorem prover. What are they and why bother?]] {{{tag(provers)}}}
+- [[file:articles/web.org][Nice language features for web development we miss in mainstream]] {{{tag(languages)}}}
+- [[file:articles/smalltalk.org][Smalltalk for a Rubyist]] {{{tag(languages)}}}
+- [[file:articles/wrong_languages.org][How to waste your time learning new programming languages]] {{{tag(languages)}}}
+
+* Courses
+
+- Introduction to TLA+ for absolute 0. (Or even -1). {{{tag(courses)}}}

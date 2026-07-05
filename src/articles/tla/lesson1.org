@@ -1,105 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>TLA+ intro</title>
-<meta name="generator" content="Org Mode" />
-<meta name="author" content="raventid" />
-<link rel="icon" type="image/png" href="/assets/favicon.png" />
-<link rel="stylesheet" href="/assets/styles.css" />
-</head>
-<body>
-<header id="site-header" class="status">
-<nav>
-  <a class="site-title" href="/index.html">raventid</a>
-  <span class="site-links">
-    <a href="/index.html">home</a>
-    <a href="/about.html">about</a>
-    <a href="https://github.com/raventid">github</a>
-  </span>
-</nav>
-</header>
-<main id="content" class="content">
-<header>
-<h1 class="title">TLA+ intro</h1>
-</header><p>
+#+title: TLA+ intro
+
 Welcome to a small TLA+ tutorial. In this tutorial I will introduce TLA+, TLA+ toolbox.
-</p>
 
-<p>
 We will talk about why we need TLA+, what is the philosophy of this tool, what class of problems is suitable for TLA+ modeling and other things.
-</p>
 
-<p>
 I want to be as practical and hands on as possible. So I will introduce mathematical foundations of TLA+ as we go, and touch practical things. There are multiple ways to run TLA+, I will use TLA+ toolbox in my series, but you are free to try VS Code extension, or any other editor of your choice.
-</p>
 
-<p>
 It might be easier to follow this series if you stick to TLA+ toolbox though.
-</p>
 
-<p>
 Visit this website to get an instructions on how to install TLA+ and when you are done, come back to this article.
-</p>
 
-<p>
-<a href="https://lamport.azurewebsites.net/tla/toolbox.html">TLA+ toolbox page</a>
-</p>
+[[https://lamport.azurewebsites.net/tla/toolbox.html][TLA+ toolbox page]]
 
-<p>
 After the installation you should be able to login to TLA+ studio. Please watch a brief intro on how to use it here [link to youtube].
-</p>
 
-<p>
 In this article I want to give you some answers to the WHY? questions. Why we need TLA+, what problems are extremely suitable for TLA+ computational model.
-</p>
 
-<p>
 TLA+ is a tool to build and verify models for your software systems. It is suitable not only for software systems, but basically for any type of systems.
-</p>
 
-<p>
 And in the following articles I will talk about modeling network level algorithms for network packet transfer, modeling analogues clock, and modeling life and death.
-</p>
 
-<p>
 Why is it possible with TLA+? Because it is not just a programming language, TLA+ is a set of tools that includes a notation (aka. express specification in a text form). Checker and IDE. My suggestion for learning TLA+ is the same as for learning a new foreign language (or a new paradigm in programming languages) very different from yours.
-</p>
 
-<p>
 Try to be open-minded, because writing specification is closer to writing mathematical formulas, and not writing the computer programs, so you will have to work through a somewhat steep learning curve, but I will take your hand and guide you through the whole process.
-</p>
 
-<p>
-To be precisie TLA+ still has some resemblense to functional programming language, but don&rsquo;t let this resemblense lead you in the wrong way and make you think that you are writing a program. You don&rsquo;t. You describe the behaviour of the system in time.
-</p>
+To be precisie TLA+ still has some resemblense to functional programming language, but don't let this resemblense lead you in the wrong way and make you think that you are writing a program. You don't. You describe the behaviour of the system in time.
 
-<p>
 Now, we will test your TLA+ setup and write some simple specification just to see if we are ready to move forward.
-</p>
 
-<p>
-Let&rsquo;s create a new specification and write this
-</p>
+Let's create a new specification and write this
 
-<div class="org-src-container">
-<pre class="src src-tla">module Clock
+#+begin_src tla
+module Clock
 
 vars hour
 
 Next == hour' = 3
 
 Spec == [][Next]_hour
-</pre>
-</div>
+#+end_src
 
-<p>
 In this tutorial I will try to never leave any untold and implicit elements, but as in any educational material I will have to introduce them step by step, and sometimes it is gonna be ugly. I will have to lie to you and simplify the idea behind TLA+ that much, that it almost sounds incorrect to the person who understand theory behind it. I will remember all the places where I did this and before you finish the last chapter you will have full and correct model in your head. I promise.
-</p>
-</main>
-<footer id="site-footer" class="status">
-<p>© 2026 raventid · woven in <a href="https://www.gnu.org/software/emacs/">GNU Emacs</a> with <a href="https://orgmode.org">org-mode</a></p>
-</footer>
-</body>
-</html>

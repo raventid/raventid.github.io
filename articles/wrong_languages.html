@@ -1,88 +1,140 @@
-<html>
-  <head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Wrong programming languages to learn</title>
-    <link rel="stylesheet" href="../assets/styles.css">
-
+<meta name="generator" content="Org Mode" />
+<meta name="author" content="raventid" />
+<link rel="icon" type="image/png" href="/assets/favicon.png" />
+<link rel="stylesheet" href="/assets/styles.css" />
 </head>
 <body>
-<h1>Wrong programming languages to learn</h1>
-
-<p>
-I've always been notoriously bad in selecting programming languages to learn. I've started with QBasic and Pascal a long time ago and I've tried about 60+ different programming languages. Here I'm gonna explain you why it might be a really bad hobby which leads to a lack of time and depression.
-
-First, I want to say, if you are a programming language fan like me and you just cannot calmly seet when you know that some programming language you never tried exists - feel free to skip this article you know what I'm going to say.
+<header id="site-header" class="status">
+<nav>
+  <a class="site-title" href="/index.html">raventid</a>
+  <span class="site-links">
+    <a href="/index.html">home</a>
+    <a href="/about.html">about</a>
+    <a href="https://github.com/raventid">github</a>
+  </span>
+</nav>
+</header>
+<main id="content" class="content">
+<header>
+<h1 class="title">Wrong programming languages to learn</h1>
+</header><p>
+I&rsquo;ve always been notoriously bad in selecting programming languages to learn. I&rsquo;ve started with QBasic and Pascal a long time ago and I&rsquo;ve tried about 60+ different programming languages. Here I&rsquo;m gonna explain you why it might be a really bad hobby which leads to a lack of time and depression.
 </p>
 
 <p>
-  First things first. It should be obvious that learning a new language requires some time. Time is your most valuable resource, clock is ticking and count the second till the end your life. Are your sure you want to spend your time doing useless work? I sure don't.
+First, I want to say, if you are a programming language fan like me and you just cannot calmly seet when you know that some programming language you never tried exists - feel free to skip this article you know what I&rsquo;m going to say.
 </p>
 
 <p>
-  There is a popular opinion - learning new languages will make you a better software developer. You will see a lot of different approaches to solve the same problem and gain some mistical insights into how to develop software. Learn Scala, Python, Clojure, Ruby, JavaScript, Kotlin, Rust and become enlighted one! Does it work this way? I doubt it.
-  </p>
+First things first. It should be obvious that learning a new language requires some time. Time is your most valuable resource, clock is ticking and count the second till the end your life. Are your sure you want to spend your time doing useless work? I sure don&rsquo;t.
+</p>
 
 <p>
-  When you programm in one programming language you learn ecosystem, you learn microtactics to solve particular problems and every day your brains forms intuitive patterns.
-
-  Need to write test? You remeber your favourite framework API. Need to pass a dependency? You know how to do it in your language. Need to type new code and solve a typicall problem? Pass a logger, instantate class, use Fabric Method. You know what idioms your language use to increase performance, heck you know your language idioms - you've read a tons of articles about it.
-  </p>
+There is a popular opinion - learning new languages will make you a better software developer. You will see a lot of different approaches to solve the same problem and gain some mistical insights into how to develop software. Learn Scala, Python, Clojure, Ruby, JavaScript, Kotlin, Rust and become enlighted one! Does it work this way? I doubt it.
+</p>
 
 <p>
-  Now, imagine your are starting to spend more time in a new programming language. For example let's imagine that you are Java developer and you learning Rust.
+When you programm in one programming language you learn ecosystem, you learn microtactics to solve particular problems and every day your brains forms intuitive patterns.
+</p>
 
+<p>
+Need to write test? You remeber your favourite framework API. Need to pass a dependency? You know how to do it in your language. Need to type new code and solve a typicall problem? Pass a logger, instantate class, use Fabric Method. You know what idioms your language use to increase performance, heck you know your language idioms - you&rsquo;ve read a tons of articles about it.
+</p>
+
+<p>
+Now, imagine your are starting to spend more time in a new programming language. For example let&rsquo;s imagine that you are Java developer and you learning Rust.
+</p>
+
+<p>
 This is a totally fine code in Rust
-<pre>
-  fn check(r : Result<u8>) -> u8 {
-    match r {
-      Some(val) => val,
-      None => 0
-    }
-  }
-</pre>
-
-By writing more and more code in this style you'll find it more and more comfortable. It would become your seconds nature. See some Enumeration? Create enum and create match when you need to work with an instance of this type.
-Now, imagine that your are comming back to Java with this skills and habbits. What are you gonna do? The first thought is to just do the same thing!
-
-<pre>
-class Result {
-}
-
-class Some extends Result {}
-class None extends Result {}
-
-bool check(Result r) {
-  if r instanceof Some { return true; }
-  if r instanceof None { return false; }
-}
-</pre>
-
-Well, it looks like your instinct failed you now. Any Java developer would be very suprprised if they see it. You are just following the patterns in your head, but you cannot perfectly port programm from one language to another without analysis. It is the same thing with real languages. Do you know a lot of people who speak perfect and idiomatic English and 12 other languages? I know polyglots exist, but the question is - are you one of them? And in the same a lot of people only know one language (mother tongue) and they are fluent and perfect within this lagnuage. And you know what makes their skills better? Learning new language? I'm not sure. But what I'm sure about is that if you learn more infromation and stufy biology, natural science, read classical literature - you enrich your language, make it beatiful and fluent. You can do the same for your programming skills. Write as many different applications (parsers, websites, cli tools, datascience, algorithms) as you can and you will make your language perfect. So the general idea here is to know more and learn more. Language is just a medium to express some ideas, you don't need 10 different mediums for the same idea. It's better to spend your time learning mathematics, economy, psycology and other skills.
-
-Let's look at another example. ( Bring some bad habbits from Java to C++ or Ocaml / Rust linked list?)
-
-You can argue and say that I'm not right. Natural languages are equivalent and programming languages are not. This is true, but let me clarify few moments here and tell you that sometimes you should definitely choose other programming language or ask someone to help you with translation. I can argue and say it's not totally correct, for example Escimo languages contain about 50 different words for experssing the color and structure of snow (we can call it Domain Specific Language). And sometimes it might be true. If you need to talk about snow it might be imperative to use Escimo and if you writing code for hardware it might be imperative to use C language.
-
-
 </p>
-  
-<p>What are programming languages? Lanuguages or formulas, how should we approach them?</p>
-<p>In one of my favourite articles Lesley Lamport writes: Programming languages are not biological systems. They are mathematical entities. Trying to think about a software system as a biological system frees you from responsibility. Now you might say: This is biological system, so I'm a scientist studying it, not a mathematician formulating every aspect of it.</p>
-<p>It's easier to live this way. Have something complex, unstudied. Something you cannot quickly understand. And most important - something that might act unpredictably. Like any not fully understood entity of a real world.</p>
 
-<p>Smalltalk was a great system, interesting, fascinting, but promoting this morbid idea.</p>
-
-<p>But understand me well - there are two parts of me artists and engineer. As an artist I appreciate Ruby programming language that proudly proclaims "Ruby is simple in appearance, but is very complex inside, just like our human body.[1]", but as an engineer I question that and aim for simplicity and transperancy.</p>
-
-<p>Let's not move away from our topic which is Stuying Languages. What I am saying here is many language have their own philosophies, and because general purpose language is good for everything you will most probably be able to use one programming language or other to solve the same problem. So not only you need to study programming language design, ecosystem, but also embrace philosophy and follow it. Like they say with kung fu schools - master one and add elements of others to form your style. So yes, you can create your own programming language, by taking your favourite one as a foundation and adding elements of others. But you should not study 10 different language and randomly apply different philosophies, technics and ideas to a poor program you are writing.</p>
-
-<p>The same way as Object Oriented programming pushing us toward a very complicated design of Objects</p>
-
+<div class="org-src-container">
+<pre class="src src-rust"><span class="org-keyword">fn</span> <span class="org-function-name">check</span>(<span class="org-variable-name">r</span> : <span class="org-type">Result</span>&lt;<span class="org-type">u8</span>&gt;) -&gt; <span class="org-type">u8</span> {
+  <span class="org-keyword">match</span> r {
+    <span class="org-type">Some</span>(val) =&gt; val,
+    <span class="org-type">None</span> =&gt; 0
+  }
+}
+</pre>
+</div>
 
 <p>
-References
-
-1 Matz, speaking on the Ruby-Talk mailing list, May 12th, 2000.
+By writing more and more code in this style you&rsquo;ll find it more and more comfortable. It would become your seconds nature. See some Enumeration? Create enum and create match when you need to work with an instance of this type. Now, imagine that your are comming back to Java with this skills and habbits. What are you gonna do? The first thought is to just do the same thing!
 </p>
 
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">class</span> <span class="org-type">Result</span> {
+}
+
+<span class="org-keyword">class</span> <span class="org-type">Some</span> <span class="org-keyword">extends</span> <span class="org-type">Result</span> {}
+<span class="org-keyword">class</span> <span class="org-type">None</span> <span class="org-keyword">extends</span> <span class="org-type">Result</span> {}
+
+<span class="org-type">bool</span> <span class="org-function-name">check</span>(<span class="org-type">Result</span> <span class="org-variable-name">r</span>) {
+  <span class="org-keyword">if</span> r <span class="org-keyword">instanceof</span> Some { <span class="org-keyword">return</span> <span class="org-constant">true</span>; }
+  <span class="org-keyword">if</span> r <span class="org-keyword">instanceof</span> None { <span class="org-keyword">return</span> <span class="org-constant">false</span>; }
+}
+</pre>
+</div>
+
+<p>
+Well, it looks like your instinct failed you now. Any Java developer would be very suprprised if they see it. You are just following the patterns in your head, but you cannot perfectly port programm from one language to another without analysis. It is the same thing with real languages. Do you know a lot of people who speak perfect and idiomatic English and 12 other languages? I know polyglots exist, but the question is - are you one of them? And in the same a lot of people only know one language (mother tongue) and they are fluent and perfect within this lagnuage. And you know what makes their skills better? Learning new language? I&rsquo;m not sure. But what I&rsquo;m sure about is that if you learn more infromation and stufy biology, natural science, read classical literature - you enrich your language, make it beatiful and fluent. You can do the same for your programming skills. Write as many different applications (parsers, websites, cli tools, datascience, algorithms) as you can and you will make your language perfect. So the general idea here is to know more and learn more. Language is just a medium to express some ideas, you don&rsquo;t need 10 different mediums for the same idea. It&rsquo;s better to spend your time learning mathematics, economy, psycology and other skills.
+</p>
+
+<p>
+Let&rsquo;s look at another example. ( Bring some bad habbits from Java to C++ or Ocaml / Rust linked list?)
+</p>
+
+<p>
+You can argue and say that I&rsquo;m not right. Natural languages are equivalent and programming languages are not. This is true, but let me clarify few moments here and tell you that sometimes you should definitely choose other programming language or ask someone to help you with translation. I can argue and say it&rsquo;s not totally correct, for example Escimo languages contain about 50 different words for experssing the color and structure of snow (we can call it Domain Specific Language). And sometimes it might be true. If you need to talk about snow it might be imperative to use Escimo and if you writing code for hardware it might be imperative to use C language.
+</p>
+
+<p>
+What are programming languages? Lanuguages or formulas, how should we approach them?
+</p>
+
+<p>
+In one of my favourite articles Lesley Lamport writes: Programming languages are not biological systems. They are mathematical entities. Trying to think about a software system as a biological system frees you from responsibility. Now you might say: This is biological system, so I&rsquo;m a scientist studying it, not a mathematician formulating every aspect of it.
+</p>
+
+<p>
+It&rsquo;s easier to live this way. Have something complex, unstudied. Something you cannot quickly understand. And most important - something that might act unpredictably. Like any not fully understood entity of a real world.
+</p>
+
+<p>
+Smalltalk was a great system, interesting, fascinting, but promoting this morbid idea.
+</p>
+
+<p>
+But understand me well - there are two parts of me artists and engineer. As an artist I appreciate Ruby programming language that proudly proclaims &ldquo;Ruby is simple in appearance, but is very complex inside, just like our human body.&rdquo;<sup><a id="fnr.1" class="footref" href="#fn.1" role="doc-backlink">1</a></sup>, but as an engineer I question that and aim for simplicity and transperancy.
+</p>
+
+<p>
+Let&rsquo;s not move away from our topic which is Stuying Languages. What I am saying here is many language have their own philosophies, and because general purpose language is good for everything you will most probably be able to use one programming language or other to solve the same problem. So not only you need to study programming language design, ecosystem, but also embrace philosophy and follow it. Like they say with kung fu schools - master one and add elements of others to form your style. So yes, you can create your own programming language, by taking your favourite one as a foundation and adding elements of others. But you should not study 10 different language and randomly apply different philosophies, technics and ideas to a poor program you are writing.
+</p>
+
+<p>
+The same way as Object Oriented programming pushing us toward a very complicated design of Objects
+</p>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1" role="doc-backlink">1</a></sup> <div class="footpara" role="doc-footnote"><p class="footpara">
+Matz, speaking on the Ruby-Talk mailing list, May 12th, 2000.
+</p></div></div>
+
+
+</div>
+</div></main>
+<footer id="site-footer" class="status">
+<p>© 2026 raventid · woven in <a href="https://www.gnu.org/software/emacs/">GNU Emacs</a> with <a href="https://orgmode.org">org-mode</a></p>
+</footer>
 </body>
 </html>

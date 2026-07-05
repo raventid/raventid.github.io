@@ -1,33 +1,492 @@
+/* ---------------------------------------------------------------------------
+   raventid.github.io — stylesheet
+   Prose is set in Charter (a system serif) — easier on the eyes for long
+   reading; code in JetBrains Mono (self-hosted).  Syntax highlighting
+   classes (.org-keyword, .org-string, …) are emitted at export time by
+   Emacs/htmlize and colored here with the palette of the modus themes
+   (modus-operandi light / modus-vivendi dark).
+   --------------------------------------------------------------------------- */
+
 @font-face {
-  font-family: "JetBrainsMono";
-  src: url("fonts/JetBrainsMono-Regular.woff");
+  font-family: "JetBrains Mono";
+  src: url("fonts/JetBrainsMono-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("fonts/JetBrainsMono-Italic.woff") format("woff");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("fonts/JetBrainsMono-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("fonts/JetBrainsMono-Bold-Italic.woff") format("woff");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* --- Palette --------------------------------------------------------------- */
+
+:root {
+  color-scheme: light dark;
+
+  --bg: #faf8f3;
+  --bg-panel: #f3f0e7;
+  --fg: #282521;
+  --fg-muted: #6e675c;
+
+  --accent: #2a6f6b;
+  --accent-strong: #1d5450;
+  --accent-under: rgba(42, 111, 107, 0.36);
+  --accent-soft: rgba(42, 111, 107, 0.11);
+
+  --hairline: #e7e2d6;
+  --border: #dfdacb;
+  --border-strong: #c9c2b0;
+
+  /* syntax — modus-operandi */
+  --syn-keyword: #5317ac;
+  --syn-builtin: #8f0075;
+  --syn-string: #2544bb;
+  --syn-doc: #2a486a;
+  --syn-comment: #6f6759;
+  --syn-function: #721045;
+  --syn-variable: #00538b;
+  --syn-type: #005a5f;
+  --syn-constant: #0000c0;
+  --syn-preprocessor: #a0132f;
+  --syn-warning: #a60000;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #17161c;
+    --bg-panel: #201f27;
+    --fg: #e7e4dd;
+    --fg-muted: #9c968a;
+
+    --accent: #82c7c0;
+    --accent-strong: #a8ded7;
+    --accent-under: rgba(130, 199, 192, 0.45);
+    --accent-soft: rgba(130, 199, 192, 0.13);
+
+    --hairline: #2b2a32;
+    --border: #34333c;
+    --border-strong: #4a4854;
+
+    /* syntax — modus-vivendi */
+    --syn-keyword: #b6a0ff;
+    --syn-builtin: #f78fe7;
+    --syn-string: #79a8ff;
+    --syn-doc: #9dc0dc;
+    --syn-comment: #8d8678;
+    --syn-function: #feacd0;
+    --syn-variable: #00d3d0;
+    --syn-type: #6ae4b9;
+    --syn-constant: #00bcff;
+    --syn-preprocessor: #ff8059;
+    --syn-warning: #ff5f59;
+  }
+}
+
+/* --- Base ------------------------------------------------------------------ */
+
+* {
+  box-sizing: border-box;
 }
 
 html {
-    font-family: "JetBrainsMono";
+  -webkit-text-size-adjust: 100%;
 }
 
-.tag {
-   padding: 5px;
-   border-radius: 50px;
-   background: #8bbcbc;
+body {
+  margin: 0 auto;
+  padding: 1.6rem 1.25rem 4rem;
+  max-width: 44rem;
+  font-family: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia,
+    serif;
+  font-size: 1.0625rem;
+  line-height: 1.68;
+  color: var(--fg);
+  background: var(--bg);
+  text-rendering: optimizeLegibility;
 }
 
-.grid-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 0px 0px;
-  grid-template-areas:
-    "logo title"
-    "content content";
+::selection {
+  background: var(--accent-soft);
 }
-.content { grid-area: content; }
-.logo { grid-area: logo; }
-.title { grid-area: title; }
+
+/* --- Site header ------------------------------------------------------------ */
+
+header#site-header {
+  padding: 0.3rem 0 0.95rem;
+  border-bottom: 1px solid var(--hairline);
+  margin-bottom: 2.8rem;
+}
+
+header#site-header nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+}
+
+.site-title {
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.01em;
+  color: var(--fg);
+  text-decoration: none;
+}
+.site-title:hover {
+  color: var(--accent);
+}
+
+.site-links a {
+  margin-left: 1.15rem;
+  font-size: 0.93rem;
+  color: var(--fg-muted);
+  text-decoration: none;
+}
+.site-links a:first-child {
+  margin-left: 0;
+}
+.site-links a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* --- Headings & prose -------------------------------------------------------- */
+
+h1.title {
+  font-size: 1.85rem;
+  line-height: 1.22;
+  letter-spacing: -0.015em;
+  margin: 0 0 1.6rem;
+  text-wrap: balance;
+}
+
+h2 {
+  font-size: 1.35rem;
+  line-height: 1.3;
+  margin: 2.3em 0 0.65em;
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  font-size: 1.12rem;
+  margin: 1.9em 0 0.5em;
+}
+
+h4 {
+  font-size: 1rem;
+  margin: 1.6em 0 0.4em;
+}
+
+p {
+  margin: 0 0 1.15em;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--accent-under);
+  text-underline-offset: 0.18em;
+}
+a:hover {
+  color: var(--accent-strong);
+  text-decoration-thickness: 2px;
+  text-decoration-color: var(--accent);
+}
+
+ul,
+ol {
+  margin: 0 0 1.15em;
+  padding-left: 1.5rem;
+}
+li {
+  margin: 0.3em 0;
+}
+li::marker {
+  color: var(--fg-muted);
+}
+
+/* org description lists */
+dt {
+  font-weight: 700;
+}
+dd {
+  margin: 0.1em 0 0.75em 1.5rem;
+}
+
+blockquote {
+  margin: 1.5em 0;
+  padding: 0.05em 0 0.05em 1.2em;
+  border-left: 3px solid var(--accent);
+  color: var(--fg-muted);
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--hairline);
+  width: 38%;
+  margin: 2.6em auto;
+}
 
 img {
-  width: 200px;
-  height: 200px;
+  max-width: 100%;
+  height: auto;
+}
+
+/* --- Index masthead ----------------------------------------------------------- */
+
+.masthead {
+  text-align: center;
+  margin: 0.4rem 0 2.6rem;
+}
+
+.masthead h1.title {
+  margin: 1.1rem 0 0;
+}
+
+.site-logo {
+  width: 148px;
+  height: 148px;
+  border-radius: 50%;
   object-fit: cover;
+  border: 1px solid var(--border);
+  background: #fff;
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.07);
+}
+
+/* --- Tags ---------------------------------------------------------------------- */
+
+.tag {
+  display: inline-block;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
+  font-size: 0.62rem;
+  font-weight: 400;
+  line-height: 1.7;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 0.05em 0.6em;
+  border-radius: 999px;
+  margin-left: 0.35em;
+  position: relative;
+  top: -0.1em;
+  white-space: nowrap;
+}
+
+/* --- Code ------------------------------------------------------------------------ */
+
+code,
+kbd,
+samp,
+pre {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
+  /* keep the ASCII you'd actually type: no <=> → ⟺ ligatures in code */
+  font-variant-ligatures: no-contextual;
+}
+
+/* inline code */
+code {
+  font-size: 0.84em;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 0.07em 0.34em;
+}
+
+/* block code — org emits <pre class="src src-LANG"> and <pre class="example"> */
+.org-src-container {
+  margin: 1.45em 0;
+}
+.org-src-container pre {
+  margin: 0;
+}
+
+pre.src,
+pre.example {
+  position: relative;
+  font-size: 0.82rem;
+  line-height: 1.62;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 1.05rem 1.25rem;
+  overflow-x: auto;
+  margin: 1.45em 0;
+}
+.org-src-container pre.src {
+  margin: 0;
+}
+
+pre.example {
+  color: var(--fg-muted);
+}
+
+/* code inside pre must not get the inline-code chip look */
+pre code {
+  font-size: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+/* language label, top right of the block */
+pre.src::before {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.9rem;
+  font-size: 0.64rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  opacity: 0.8;
+}
+pre.src-rust::before      { content: "rust"; }
+pre.src-java::before      { content: "java"; }
+pre.src-coq::before       { content: "coq"; }
+pre.src-tla::before       { content: "tla+"; }
+pre.src-haskell::before   { content: "haskell"; }
+pre.src-ocaml::before     { content: "ocaml"; }
+pre.src-ruby::before      { content: "ruby"; }
+pre.src-elixir::before    { content: "elixir"; }
+pre.src-c::before         { content: "c"; }
+pre.src-python::before    { content: "python"; }
+pre.src-emacs-lisp::before { content: "elisp"; }
+pre.src-sh::before        { content: "shell"; }
+
+/* --- Syntax highlighting (classes emitted by htmlize) ---------------------------- */
+
+.org-keyword           { color: var(--syn-keyword); }
+.org-builtin           { color: var(--syn-builtin); }
+.org-string            { color: var(--syn-string); }
+.org-doc               { color: var(--syn-doc); }
+.org-comment,
+.org-comment-delimiter { color: var(--syn-comment); font-style: italic; }
+.org-function-name     { color: var(--syn-function); }
+.org-variable-name     { color: var(--syn-variable); }
+.org-type              { color: var(--syn-type); }
+.org-constant          { color: var(--syn-constant); }
+.org-preprocessor      { color: var(--syn-preprocessor); }
+.org-warning           { color: var(--syn-warning); }
+.org-negation-char     { color: var(--syn-preprocessor); }
+
+/* --- Tables ------------------------------------------------------------------------ */
+
+table {
+  border-collapse: collapse;
+  margin: 1.5em 0;
+  font-size: 0.95rem;
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+th {
+  font-weight: 700;
+  text-align: left;
+  padding: 0.4em 0.9em;
+  border-bottom: 2px solid var(--border-strong);
+}
+
+td {
+  padding: 0.4em 0.9em;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.org-left   { text-align: left; }
+.org-right  { text-align: right; }
+.org-center { text-align: center; }
+
+/* --- Math (MathJax) ------------------------------------------------------------------ */
+
+mjx-container[display="true"] {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+}
+
+/* --- Footnotes ------------------------------------------------------------------------ */
+
+#footnotes {
+  margin-top: 3.2rem;
+  font-size: 0.92rem;
+}
+
+h2.footnotes {
+  font-size: 1rem;
+  border-top: 1px solid var(--hairline);
+  padding-top: 1.1rem;
+  margin-bottom: 0.8em;
+}
+
+.footpara {
+  display: inline;
+}
+
+/* --- Site footer ------------------------------------------------------------------------ */
+
+footer#site-footer {
+  margin-top: 4.5rem;
+  padding-top: 1.05rem;
+  border-top: 1px solid var(--hairline);
+  font-size: 0.85rem;
+  color: var(--fg-muted);
+}
+footer#site-footer p {
+  margin: 0;
+}
+footer#site-footer a {
+  color: var(--fg-muted);
+}
+footer#site-footer a:hover {
+  color: var(--accent);
+}
+
+/* --- Small screens & print ----------------------------------------------------------------- */
+
+@media (max-width: 480px) {
+  body {
+    font-size: 1rem;
+    padding-top: 1.1rem;
+  }
+  h1.title {
+    font-size: 1.5rem;
+  }
+  pre.src,
+  pre.example {
+    padding: 0.85rem 1rem;
+    border-radius: 7px;
+  }
+}
+
+@media print {
+  header#site-header,
+  footer#site-footer {
+    display: none;
+  }
+  body {
+    max-width: none;
+  }
 }

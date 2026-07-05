@@ -1,103 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <link rel="stylesheet" href="../assets/styles.css">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Provers. What are they and why you might need one?</title>
+<meta name="generator" content="Org Mode" />
+<meta name="author" content="raventid" />
+<link rel="icon" type="image/png" href="/assets/favicon.png" />
+<link rel="stylesheet" href="/assets/styles.css" />
 </head>
-
 <body>
-<h1>Provers. What are they and why you might need one?</h1>
-
+<header id="site-header" class="status">
+<nav>
+  <a class="site-title" href="/index.html">raventid</a>
+  <span class="site-links">
+    <a href="/index.html">home</a>
+    <a href="/about.html">about</a>
+    <a href="https://github.com/raventid">github</a>
+  </span>
+</nav>
+</header>
+<main id="content" class="content">
+<header>
+<h1 class="title">Provers. What are they and why you might need one?</h1>
+</header><p>
 In this article I would list some of proof assitants and theorem provers and will try to explain why someone might be interested in trying one of them.
+</p>
 
-<ul>
-  <li>Coq</li>
-  <li>Agda</li>
-  <li>Idris</li>
-  <li>ATS</li>
-  <li>Arend</li>
-  <li>Isabell</li>
-  <li>LEAN</li>
-  <li>F*</li>
-  <li>Z3 Theorem Prover</li>
-  <li>Why TLA+, Alloy and others are not in the list?</li>
+<ul class="org-ul">
+<li>Coq</li>
+<li>Agda</li>
+<li>Idris</li>
+<li>ATS</li>
+<li>Arend</li>
+<li>Isabell</li>
+<li>LEAN</li>
+<li>F*</li>
+<li>Z3 Theorem Prover</li>
+<li>Why TLA+, Alloy and others are not in the list?</li>
 </ul>
 
 <p>
-  When you think about proving your code is correct you can right a better code. It's like with Rust. When you have a lot of Rust experience you are starting to think in terms of moving/borrowing/lifetimes when you are writing C++ or C code. Provers affect your way of thinking about the programm and things like totality, correctness and many more. In the same time writing even simple proofs might take a lot of time, so it is doubtfull that you want to do it in the same time you write code.
+When you think about proving your code is correct you can right a better code. It&rsquo;s like with Rust. When you have a lot of Rust experience you are starting to think in terms of moving/borrowing/lifetimes when you are writing C++ or C code. Provers affect your way of thinking about the programm and things like totality, correctness and many more. In the same time writing even simple proofs might take a lot of time, so it is doubtfull that you want to do it in the same time you write code.
 </p>
 
 <p>
-  Do we need any form of verification when we are writing some buiseness code? I mean in healthcare, travel logistics, CRM/ERP, you name it. Should we verify login form? Dashboard view? Any other thing?
-
-  HERE I'M BRINGING THE DIFFERENCE BETWEEN TLA+ and LEAN and try to explain what are they
+Do we need any form of verification when we are writing some buiseness code? I mean in healthcare, travel logistics, CRM/ERP, you name it. Should we verify login form? Dashboard view? Any other thing?
 </p>
 
-<div>
-  <h3>Coq</h3>
-  <p>
-    Most widely used and established technology. Has a lot of great literature dedicated to it. (Link logical foundation)
-  </p>
-  <p>
-    <code>
-      Theorem plus_O_n : forall n : nat, 0 + n = n.
-      Proof.
-        intros n. simpl. reflexivity.  Qed.
-    </code>
-  </p>
-  <p>
-      Curry-Howard correspondence
-  </p>
-  <p>
-      It is possible to programm in Coq in imperative style and with built in programming language you can pretty much create any software components you like
-  </p>
-  <p>
-    Rust Belt, ComptCert and many more as an examples of real world usage
-  </p>
+<p>
+HERE I&rsquo;M BRINGING THE DIFFERENCE BETWEEN TLA+ and LEAN and try to explain what are they
+</p>
+
+<div id="outline-container-org8f4537f" class="outline-2">
+<h2 id="org8f4537f">Coq</h2>
+<div class="outline-text-2" id="text-org8f4537f">
+<p>
+Most widely used and established technology. Has a lot of great literature dedicated to it. (Link logical foundation)
+</p>
+
+<div class="org-src-container">
+<pre class="src src-coq">Theorem plus_O_n : forall n : nat, 0 + n = n.
+Proof.
+  intros n. simpl. reflexivity.  Qed.
+</pre>
 </div>
 
-<div>
-  <h3>Agda</h3>
-  <p>Popular prover developed after Haskell with lazyness in mind. Also has a great tutorial and you would find this usefull if you already have some Haskell knowledge</p>
+<p>
+Curry-Howard correspondence
+</p>
+
+<p>
+It is possible to programm in Coq in imperative style and with built in programming language you can pretty much create any software components you like
+</p>
+
+<p>
+Rust Belt, ComptCert and many more as an examples of real world usage
+</p>
+</div>
 </div>
 
-<div>
-  <h3>Idris</h3>
-  <p>First language which is trying to find a practical application of dependent types. Could be used as a prover, but more a practical language with dependent types</p>
+<div id="outline-container-org36812d2" class="outline-2">
+<h2 id="org36812d2">Agda</h2>
+<div class="outline-text-2" id="text-org36812d2">
+<p>
+Popular prover developed after Haskell with lazyness in mind. Also has a great tutorial and you would find this usefull if you already have some Haskell knowledge
+</p>
+</div>
 </div>
 
-<div>
-  <h3>ATS</h3>
-  <p>Most esoteric language among all of the contenders. Contains proof-language, language with dependent types and refinement types and many more tricks for low-level programming. You can write type-safe malloc and free with it and do type-safe pointer arithmetic. We'll take a closer look at ATS later in other articles too.</p>
+<div id="outline-container-org4d3d2c8" class="outline-2">
+<h2 id="org4d3d2c8">Idris</h2>
+<div class="outline-text-2" id="text-org4d3d2c8">
+<p>
+First language which is trying to find a practical application of dependent types. Could be used as a prover, but more a practical language with dependent types
+</p>
+</div>
 </div>
 
-<div>
-  <h3>Arend</h3>
-  <p>Prover developed by JetBrains research. Based on HOTT approach and gives you a few intereting tricks you can use + perfect IntelliJ IDE to work in. No more Emacs!</p>
+<div id="outline-container-org17a46da" class="outline-2">
+<h2 id="org17a46da">ATS</h2>
+<div class="outline-text-2" id="text-org17a46da">
+<p>
+Most esoteric language among all of the contenders. Contains proof-language, language with dependent types and refinement types and many more tricks for low-level programming. You can write type-safe malloc and free with it and do type-safe pointer arithmetic. We&rsquo;ll take a closer look at ATS later in other articles too.
+</p>
+</div>
 </div>
 
-<div>
-  <h3>Isabell</h3>
-  <p>Very practical prover. Not hyped, but people just silently do the real stuff with it. (Here gonna be the link). Also this is the only prover here which is not using dependent types and it makes it extra interesting to take a look what alternative approach do they employ</p>
-  <p>Real-world applications of Isabell, as an example you can take a look at se4 operating system.</p>
+<div id="outline-container-orgf379b31" class="outline-2">
+<h2 id="orgf379b31">Arend</h2>
+<div class="outline-text-2" id="text-orgf379b31">
+<p>
+Prover developed by JetBrains research. Based on HOTT approach and gives you a few intereting tricks you can use + perfect IntelliJ IDE to work in. No more Emacs!
+</p>
+</div>
 </div>
 
-<div>
-  <h3>LEAN</h3>
-  <p>Prover developed by Microsoft Research as a response to Coq quirks. Has a very nice intro tutorial and VS Code plugin. This is one of the more practical programming lanuguages and you can easily write real programs with it, compile and run.</p>
+<div id="outline-container-org85632a9" class="outline-2">
+<h2 id="org85632a9">Isabell</h2>
+<div class="outline-text-2" id="text-org85632a9">
+<p>
+Very practical prover. Not hyped, but people just silently do the real stuff with it. (Here gonna be the link). Also this is the only prover here which is not using dependent types and it makes it extra interesting to take a look what alternative approach do they employ
+</p>
+
+<p>
+Real-world applications of Isabell, as an example you can take a look at se4 operating system.
+</p>
+</div>
 </div>
 
-<div>
-  <h3>F*</h3>
-  <p>One more contender by Microsoft Research. We want stop here, but F* has been used to verify real software not so long time ago (link to network stack)</p>
+<div id="outline-container-org80a9677" class="outline-2">
+<h2 id="org80a9677">LEAN</h2>
+<div class="outline-text-2" id="text-org80a9677">
+<p>
+Prover developed by Microsoft Research as a response to Coq quirks. Has a very nice intro tutorial and VS Code plugin. This is one of the more practical programming lanuguages and you can easily write real programs with it, compile and run.
+</p>
+</div>
 </div>
 
-<div>
-  <h3>Z3 Theorem Prover</h3>
-  <p>
-
-  </p>
+<div id="outline-container-org902acf1" class="outline-2">
+<h2 id="org902acf1">F*</h2>
+<div class="outline-text-2" id="text-org902acf1">
+<p>
+One more contender by Microsoft Research. We want stop here, but F* has been used to verify real software not so long time ago (link to network stack)
+</p>
+</div>
 </div>
 
-<div>
-Summary:
+<div id="outline-container-org3625266" class="outline-2">
+<h2 id="org3625266">Z3 Theorem Prover</h2>
 </div>
 
+<div id="outline-container-org6420f81" class="outline-2">
+<h2 id="org6420f81">Summary</h2>
+</div>
+</main>
+<footer id="site-footer" class="status">
+<p>© 2026 raventid · woven in <a href="https://www.gnu.org/software/emacs/">GNU Emacs</a> with <a href="https://orgmode.org">org-mode</a></p>
+</footer>
 </body>
+</html>

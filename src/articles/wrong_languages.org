@@ -1,0 +1,65 @@
+#+title: Wrong programming languages to learn
+
+I've always been notoriously bad in selecting programming languages to learn. I've started with QBasic and Pascal a long time ago and I've tried about 60+ different programming languages. Here I'm gonna explain you why it might be a really bad hobby which leads to a lack of time and depression.
+
+First, I want to say, if you are a programming language fan like me and you just cannot calmly seet when you know that some programming language you never tried exists - feel free to skip this article you know what I'm going to say.
+
+First things first. It should be obvious that learning a new language requires some time. Time is your most valuable resource, clock is ticking and count the second till the end your life. Are your sure you want to spend your time doing useless work? I sure don't.
+
+There is a popular opinion - learning new languages will make you a better software developer. You will see a lot of different approaches to solve the same problem and gain some mistical insights into how to develop software. Learn Scala, Python, Clojure, Ruby, JavaScript, Kotlin, Rust and become enlighted one! Does it work this way? I doubt it.
+
+When you programm in one programming language you learn ecosystem, you learn microtactics to solve particular problems and every day your brains forms intuitive patterns.
+
+Need to write test? You remeber your favourite framework API. Need to pass a dependency? You know how to do it in your language. Need to type new code and solve a typicall problem? Pass a logger, instantate class, use Fabric Method. You know what idioms your language use to increase performance, heck you know your language idioms - you've read a tons of articles about it.
+
+Now, imagine your are starting to spend more time in a new programming language. For example let's imagine that you are Java developer and you learning Rust.
+
+This is a totally fine code in Rust
+
+#+begin_src rust
+fn check(r : Result<u8>) -> u8 {
+  match r {
+    Some(val) => val,
+    None => 0
+  }
+}
+#+end_src
+
+By writing more and more code in this style you'll find it more and more comfortable. It would become your seconds nature. See some Enumeration? Create enum and create match when you need to work with an instance of this type. Now, imagine that your are comming back to Java with this skills and habbits. What are you gonna do? The first thought is to just do the same thing!
+
+#+begin_src java
+class Result {
+}
+
+class Some extends Result {}
+class None extends Result {}
+
+bool check(Result r) {
+  if r instanceof Some { return true; }
+  if r instanceof None { return false; }
+}
+#+end_src
+
+Well, it looks like your instinct failed you now. Any Java developer would be very suprprised if they see it. You are just following the patterns in your head, but you cannot perfectly port programm from one language to another without analysis. It is the same thing with real languages. Do you know a lot of people who speak perfect and idiomatic English and 12 other languages? I know polyglots exist, but the question is - are you one of them? And in the same a lot of people only know one language (mother tongue) and they are fluent and perfect within this lagnuage. And you know what makes their skills better? Learning new language? I'm not sure. But what I'm sure about is that if you learn more infromation and stufy biology, natural science, read classical literature - you enrich your language, make it beatiful and fluent. You can do the same for your programming skills. Write as many different applications (parsers, websites, cli tools, datascience, algorithms) as you can and you will make your language perfect. So the general idea here is to know more and learn more. Language is just a medium to express some ideas, you don't need 10 different mediums for the same idea. It's better to spend your time learning mathematics, economy, psycology and other skills.
+
+Let's look at another example. ( Bring some bad habbits from Java to C++ or Ocaml / Rust linked list?)
+
+You can argue and say that I'm not right. Natural languages are equivalent and programming languages are not. This is true, but let me clarify few moments here and tell you that sometimes you should definitely choose other programming language or ask someone to help you with translation. I can argue and say it's not totally correct, for example Escimo languages contain about 50 different words for experssing the color and structure of snow (we can call it Domain Specific Language). And sometimes it might be true. If you need to talk about snow it might be imperative to use Escimo and if you writing code for hardware it might be imperative to use C language.
+
+What are programming languages? Lanuguages or formulas, how should we approach them?
+
+In one of my favourite articles Lesley Lamport writes: Programming languages are not biological systems. They are mathematical entities. Trying to think about a software system as a biological system frees you from responsibility. Now you might say: This is biological system, so I'm a scientist studying it, not a mathematician formulating every aspect of it.
+
+It's easier to live this way. Have something complex, unstudied. Something you cannot quickly understand. And most important - something that might act unpredictably. Like any not fully understood entity of a real world.
+
+Smalltalk was a great system, interesting, fascinting, but promoting this morbid idea.
+
+But understand me well - there are two parts of me artists and engineer. As an artist I appreciate Ruby programming language that proudly proclaims "Ruby is simple in appearance, but is very complex inside, just like our human body."[fn:1], but as an engineer I question that and aim for simplicity and transperancy.
+
+Let's not move away from our topic which is Stuying Languages. What I am saying here is many language have their own philosophies, and because general purpose language is good for everything you will most probably be able to use one programming language or other to solve the same problem. So not only you need to study programming language design, ecosystem, but also embrace philosophy and follow it. Like they say with kung fu schools - master one and add elements of others to form your style. So yes, you can create your own programming language, by taking your favourite one as a foundation and adding elements of others. But you should not study 10 different language and randomly apply different philosophies, technics and ideas to a poor program you are writing.
+
+The same way as Object Oriented programming pushing us toward a very complicated design of Objects
+
+* Footnotes
+
+[fn:1] Matz, speaking on the Ruby-Talk mailing list, May 12th, 2000.

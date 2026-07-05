@@ -1,64 +1,99 @@
-<!doctype html>
-<html class="no-js" lang="">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>Untitled</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Types and programming languages</title>
+<meta name="generator" content="Org Mode" />
+<meta name="author" content="raventid" />
+<link rel="icon" type="image/png" href="/assets/favicon.png" />
+<link rel="stylesheet" href="/assets/styles.css" />
+</head>
+<body>
+<header id="site-header" class="status">
+<nav>
+  <a class="site-title" href="/index.html">raventid</a>
+  <span class="site-links">
+    <a href="/index.html">home</a>
+    <a href="/about.html">about</a>
+    <a href="https://github.com/raventid">github</a>
+  </span>
+</nav>
+</header>
+<main id="content" class="content">
+<header>
+<h1 class="title">Types and programming languages</h1>
+</header><p>
+This is my small tour on thinking about type systems, their connection to pure mathematics and do we need them in programming languages or not. (spoiler: I think we do)
+</p>
 
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-        <!-- Place favicon.ico in the root directory -->
+<p>
+This article is inspired by Lamport, Dover article explaining the advantage of untyped set theory in comparison to type systems. I will quote this article a lot here as I am a big Leslie Lamport fanboy.
+</p>
 
-    </head>
-    <body>
-        <!--[if lt IE 8]>
-            <p class="browserupgrade">
-            You are using an <strong>outdated</strong> browser. Please
-            <a href="http://browsehappy.com/">upgrade your browser</a> to improve
-            your experience.
-            </p>
-        <![endif]-->
+<p>
+I will also metion some things I personally find interesting and reference some peculiarities of javascript design, a long discussion in ruby community, dependent type systems and their cost and so on.
+</p>
 
-        This is my small tour on thinking about type systems, their connection to pure mathematics and do we need them in programming languages or not. (spoiler: I think we do)
+<p>
+First - we need to define the framework of our discussion, is it philosophical discussion about types? Do we want to solve some problem with this discussion? Or is is just historical antology of type theory and type systems?
+</p>
 
-        This article is inspired by Lamport, Dover article explaining the advantage of untyped set theory in comparison to type systems. I will quote this article a lot here as I am a big Leslie Lamport fanboy.
+<p>
+I want to give you historical context for sure, but also a practical view of type systems in industrial programming, share my personal vision for types and how they affect the programming flow.
+</p>
 
-        I will also metion some things I personally find interesting and reference some peculiarities of javascript design, a long discussion in ruby community, dependent type systems and their cost and so on.
+<p>
+Before we go with a history I want to start my narration with an example of software engineer trying to use type systems in a language like Java or Ruby:
+</p>
 
-        First - we need to define the framework of our discussion, is it philosophical discussion about types? Do we want to solve some problem with this discussion? Or is is just historical antology of type theory and type systems?
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-keyword">class</span> <span class="org-type">A</span> {
+  <span class="org-keyword">public</span> <span class="org-type">int</span> <span class="org-variable-name">field1</span>;
+  <span class="org-keyword">public</span> <span class="org-type">string</span> <span class="org-variable-name">field2</span>;
+}
+</pre>
+</div>
 
-        I want to give you historical context for sure, but also a practical view of type systems in industrial programming, share my personal vision for types and how they affect the programming flow.
+<p>
+What you may here this person say is that they have a class A and inside two properties with types int and string. So A is a class, but field1 and field2 are fields with types. What is the type of A?
+</p>
 
-        Before we go with a history I want to start my narration with an example of software engineer trying to use type systems in a language like Java or Ruby:
+<p>
+This question might seem confusing, and it would take some time for you to say that, ehmmm, but A is a type itself it has no type!
+</p>
 
-        ```
-        class A {
-          public int field1;
-          public string field2;
-        }
-        ```
+<div class="org-src-container">
+<pre class="src src-java"><span class="org-type">A</span> <span class="org-variable-name">a</span> = <span class="org-keyword">new</span> <span class="org-type">A</span>;
+</pre>
+</div>
 
-        What you may here this person say is that they have a class A and inside two properties with types int and string.
-        So A is a class, but field1 and field2 are fields with types. What is the type of A?
+<p>
+in this case <code>a</code> is a variable and this variable has a type A, right?
+</p>
 
-        This question might seem confusing, and it would take some time for you to say that, ehmmm, but A is a type itself it has no type!
+<p>
+What I have noticed is that many of us do not have a clear ontological difference between type space and value space. That&rsquo;s why the border between types and values gets blurred and we struggle to figure out some of the more advanced type technics like GADT in Ocaml for example (I will show you this idea later)
+</p>
 
-        ```
-        A a = new A;
-        ```
+<p>
+Does A have a type? What is this field1 is it a type or a value? Or is it a property of a type?
+</p>
 
-        in this case `a` is a variable and this variable has a type A, right?
+<p>
+TODO: THIS ARTICLE SHOULD HAVE COVARIENCE/CONTRAVARIENCE EXAMPLE WITH SUBTYPING
+</p>
 
-        What I have noticed is that many of us do not have a clear ontological difference between type space and value space.
-        That's why the border between types and values gets blurred and we struggle to figure out some of the more advanced type technics like GADT in Ocaml for example (I will show you this idea later)
+<p>
+Connection between programming language types and mathematics are so profound that you can actually find Type Theory to be a discipline in mathematics itself.
+</p>
 
-        Does A have a type? What is this field1 is it a type or a value? Or is it a property of a type?
-
-        TODO: THIS ARTICLE SHOULD HAVE COVARIENCE/CONTRAVARIENCE EXAMPLE WITH SUBTYPING
-
-        Connection between programming language types and mathematics are so profound that you can actually find Type Theory to be a discipline in mathematics itself.
-
-        Let's talk about Bertrand Russel, sets, TLA+ and Agda here. Calculus of inductive construction also goes here.
-    </body>
+<p>
+Let&rsquo;s talk about Bertrand Russel, sets, TLA+ and Agda here. Calculus of inductive construction also goes here.
+</p>
+</main>
+<footer id="site-footer" class="status">
+<p>© 2026 raventid · woven in <a href="https://www.gnu.org/software/emacs/">GNU Emacs</a> with <a href="https://orgmode.org">org-mode</a></p>
+</footer>
+</body>
 </html>

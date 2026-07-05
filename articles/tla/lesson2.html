@@ -1,109 +1,220 @@
-<!doctype html>
-<html class="no-js" lang="">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>TLA+ course | Article 2</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TLA+ course | Article 2</title>
+<meta name="generator" content="Org Mode" />
+<meta name="author" content="raventid" />
+<link rel="icon" type="image/png" href="/assets/favicon.png" />
+<link rel="stylesheet" href="/assets/styles.css" />
+<script>
+  window.MathJax = {
+    tex: {
+      ams: {
+        multlineWidth: '85%'
+      },
+      tags: 'ams',
+      tagSide: 'right',
+      tagIndent: '.8em'
+    },
+    chtml: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    svg: {
+      scale: 1.0,
+      displayAlign: 'center',
+      displayIndent: '0em'
+    },
+    output: {
+      font: 'mathjax-modern',
+      displayOverflow: 'overflow'
+    }
+  };
+</script>
 
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-        <!-- Place favicon.ico in the root directory -->
-    </head>
-    <body>
-        <!--[if lt IE 8]>
-            <p class="browserupgrade">
-            You are using an <strong>outdated</strong> browser. Please
-            <a href="http://browsehappy.com/">upgrade your browser</a> to improve
-            your experience.
-            </p>
-        <![endif]-->
+<script
+  id="MathJax-script"
+  async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+</head>
+<body>
+<header id="site-header" class="status">
+<nav>
+  <a class="site-title" href="/index.html">raventid</a>
+  <span class="site-links">
+    <a href="/index.html">home</a>
+    <a href="/about.html">about</a>
+    <a href="https://github.com/raventid">github</a>
+  </span>
+</nav>
+</header>
+<main id="content" class="content">
+<header>
+<h1 class="title">TLA+ course | Article 2</h1>
+</header><p>
+In the second lesson we will keep using our clock specification and I will try to demostrate you the philosophy behind TLA+ and the whole idea of temporal logic, but first. Let me introduce a logic. I will through some fancy words at you, so you can flex and show your skills to colleagues.
+</p>
 
-        In the second lesson we will keep using our clock specification and I will try to demostrate you the philosophy behind TLA+ and the whole idea of temporal logic,
-        but first. Let me introduce a logic. I will through some fancy words at you, so you can flex and show your skills to colleagues.
+<p>
+I will explain what is Zermelo–Fraenkel set theory and how it is connected to mathematical foundation of what we will study here. Even if you are 0 in math, worry not, I will give you only high-level information. Enough for you to understand the subject and flex your knowledge, but not enough to claim you are mathematician.
+</p>
 
-        I will explain what is Zermelo–Fraenkel set theory and how it is connected to mathematical foundation of what we will study here. Even if you are 0 in math, worry not, I will
-        give you only high-level information. Enough for you to understand the subject and flex your knowledge, but not enough to claim you are mathematician.
+<p>
+Let&rsquo;s make sure you remember what is boolean algebra. This is one of the foundational elements of TLA+ and without this we will not be able to move forward.
+</p>
 
-        Let's make sure you remember what is boolean algebra. This is one of the foundational elements of TLA+ and without this we will not be able to move forward.
+<p>
+Let&rsquo;s briefly walk through boolean algebra concept:
+</p>
 
-        Let's briefly walk through boolean algebra concept:
-
-        Negation
-        -A
-
-        Conjunction
-        A /\ B
-
-        Disjunction
-        A \/ B
-
-        Equivalence
-        A <=> B
-
-        Implication
-        A => B
-
-
-        Let's try to play around boolean algebra in TLA+
-
-        Go to the eval section in TLA+ toolbox and run this code TRUE /\ FALSE.
-
-        Now, witness the power of TLA+. Let's build a truth tables for every expression. First, let's build a cartesian product from values. We need all pairs of
-        TRUE and FALSE.
-
-        <p>
-        {TRUE, FALSE} \X {TRUE, FALSE}
-        </p>
-
-        Let's rewrite it in this way to make a binding called values. This is another way to construct a cartesian product, but this time we will add logical
-        conjunction to every value. This way we can elegantly build a truth table for any operation.
-        <p>
-            LET values == {TRUE, FALSE}
-            IN { <<a, b, a /\ b>> : a \in values, b \in values }
-        </p>
-
-        The same way you can build whole multiplication table for a school! Look:
-        <p>
-            LET values == {1,2,3,4,5,6,7,8,9}
-            IN { <<a, b, a * b>> : a \in values, b \in values }
-        </p>
-
-        Now, play around and make sure you understand those constructions. Build a truth table for NOT (-) operation and OR (\/) operation.
-
-        As you might guess truth table for OR is the same as for AND, so you just have to change /\ sign to \/ sign.
-
-        As for the NOT operator we have to simplify the code:
-        <p>
-            LET values == {TRUE, FALSE}
-            IN { <<a, ~a>> : a \in values }
-        </p>
+<table>
 
 
-        <p>
-            IMPORTANT: Even if I say now that TLA+ is easier than programming you might not believe, and if you are comming from a programming background you might still think in terms
-            of execution of a program, how to write loops and how to write ifs.
+<colgroup>
+<col  class="org-left">
 
-            This is not how specification works, the deep insight is to embrace it's simplicity
+<col  class="org-left">
 
-            Init == state = 0
-            
-            A == /\ enabling_condition_1
-                /\ state' = -1
+<col  class="org-left">
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Operation</th>
+<th scope="col" class="org-left">Mathematics</th>
+<th scope="col" class="org-left">TLA+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left">Negation</td>
+<td class="org-left">\(\neg A\)</td>
+<td class="org-left"><code>-A</code></td>
+</tr>
 
-            B == /\ enabling_condition_2
-                /\ state' = 1
+<tr>
+<td class="org-left">Conjunction</td>
+<td class="org-left">\(A \land B\)</td>
+<td class="org-left"><code>A /\ B</code></td>
+</tr>
 
-            Next == A \/ B
+<tr>
+<td class="org-left">Disjunction</td>
+<td class="org-left">\(A \lor B\)</td>
+<td class="org-left"><code>A \/ B</code></td>
+</tr>
 
-            Looking at this text you might think that this spec has an execution order, Next call A or B, B call enabling_condition_2 etc.
-            This is a wrong way to think about spec if you want to construct a logical spec. It is simpler. I am not lying.
+<tr>
+<td class="org-left">Equivalence</td>
+<td class="org-left">\(A \Leftrightarrow B\)</td>
+<td class="org-left"><code>A &lt;=&gt; B</code></td>
+</tr>
 
-            What is written here have no order. There is no evaluation here. This is formula.
+<tr>
+<td class="org-left">Implication</td>
+<td class="org-left">\(A \Rightarrow B\)</td>
+<td class="org-left"><code>A =&gt; B</code></td>
+</tr>
+</tbody>
+</table>
 
-            We say that when system goes forward in time Next is valid. Next is either A or B. A might be true, B might be true.
-            A and B are not functions, they are a part of a big formula. It is really hard to explain with words, but try to meditate on this.
-            If you can iternilize this idea - you mastered one of the hard parts of TLA+ (the other hard part you will find in the future)
-        </p>
-    </body>
+<p>
+Let&rsquo;s try to play around boolean algebra in TLA+
+</p>
+
+<p>
+Go to the eval section in TLA+ toolbox and run this code <code>TRUE /\ FALSE</code>.
+</p>
+
+<p>
+Now, witness the power of TLA+. Let&rsquo;s build a truth tables for every expression. First, let&rsquo;s build a cartesian product from values. We need all pairs of TRUE and FALSE:
+</p>
+
+<p>
+\[ \{T, F\} \times \{T, F\} = \{\langle T, T\rangle,\ \langle T, F\rangle,\ \langle F, T\rangle,\ \langle F, F\rangle\} \]
+</p>
+
+<div class="org-src-container">
+<pre class="src src-tla">{TRUE, FALSE} \X {TRUE, FALSE}
+</pre>
+</div>
+
+<p>
+Let&rsquo;s rewrite it in this way to make a binding called values. This is another way to construct a cartesian product, but this time we will add logical conjunction to every value. This way we can elegantly build a truth table for any operation.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-tla">LET values == {TRUE, FALSE}
+IN { &lt;&lt;a, b, a /\ b&gt;&gt; : a \in values, b \in values }
+</pre>
+</div>
+
+<p>
+The same way you can build whole multiplication table for a school! Look:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-tla">LET values == {1,2,3,4,5,6,7,8,9}
+IN { &lt;&lt;a, b, a * b&gt;&gt; : a \in values, b \in values }
+</pre>
+</div>
+
+<p>
+Now, play around and make sure you understand those constructions. Build a truth table for NOT (<code>-</code>) operation and OR (<code>\/</code>) operation.
+</p>
+
+<p>
+As you might guess truth table for OR is the same as for AND, so you just have to change <code>/\</code> sign to <code>\/</code> sign.
+</p>
+
+<p>
+As for the NOT operator we have to simplify the code:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-tla">LET values == {TRUE, FALSE}
+IN { &lt;&lt;a, ~a&gt;&gt; : a \in values }
+</pre>
+</div>
+
+<p>
+IMPORTANT: Even if I say now that TLA+ is easier than programming you might not believe, and if you are comming from a programming background you might still think in terms of execution of a program, how to write loops and how to write ifs.
+</p>
+
+<p>
+This is not how specification works, the deep insight is to embrace it&rsquo;s simplicity
+</p>
+
+<div class="org-src-container">
+<pre class="src src-tla">Init == state = 0
+
+A == /\ enabling_condition_1
+     /\ state' = -1
+
+B == /\ enabling_condition_2
+     /\ state' = 1
+
+Next == A \/ B
+</pre>
+</div>
+
+<p>
+Looking at this text you might think that this spec has an execution order, Next call A or B, B call enabling_condition_2 etc. This is a wrong way to think about spec if you want to construct a logical spec. It is simpler. I am not lying.
+</p>
+
+<p>
+What is written here have no order. There is no evaluation here. This is formula.
+</p>
+
+<p>
+We say that when system goes forward in time Next is valid. Next is either A or B. A might be true, B might be true. A and B are not functions, they are a part of a big formula. It is really hard to explain with words, but try to meditate on this. If you can iternilize this idea - you mastered one of the hard parts of TLA+ (the other hard part you will find in the future)
+</p>
+</main>
+<footer id="site-footer" class="status">
+<p>© 2026 raventid · woven in <a href="https://www.gnu.org/software/emacs/">GNU Emacs</a> with <a href="https://orgmode.org">org-mode</a></p>
+</footer>
+</body>
 </html>

@@ -1,0 +1,54 @@
+#+title: About me
+
+I am software developer. I work for Aurora labs, where we are building the best Ethereum ecosystem on top of Near Protocol. I've been writing programs for money, for the last 8 years and built CRM/ERP systems, web-sites (frontend and backend), controllers for embed devices, highload application backends and CI/CD pipelines.
+
+I've used Javascript, Php, Java, C++, Ruby, Rust, Elixir at work and many more for my personal projects. I'm interested in formal methods, functional programming languages (Elixir and Haskell are my favourites one for writing commercial products), operating systems, programming language design and server-side software. (NOTE: Probably now I prefer something like Ocaml moore, when you get older you become more practical and requirements for the language features change too)
+
+Many times I've tried to become C# developer, I had Windows computer and programmed hobby projects in C#, later I've installed Mono on my Linux, later on my Mac. I played with F#. But I have never found an opportunity to write C# or F# for production, so left my hope here, though, I really liked languages, libraries and documentation.
+
+Most fresh production experience I have is web-backend with *Ruby* (large app for selling airline tickets), *Rust* (search engine for airline airline tickets), *Rust* for financial platform, *Elixir* (small self contained web-backends), *Rust* for healthcare systems.
+
+I'm also involved in infrastructure, where I'm using tools like Terraform, Kubernetes, Linkerd and different solutions to organize CI/CD flows. Also I know something about "DevSecOps" with AWS and/or Kubernetes (I've also used other cloud providers, mostly GCP).
+
+I might also get you covered with mobile applications written in Swift and Kotlin. I can also write some Typescript with React.js. That's not the type of work I'm good at, but if you want someone to do ALL the things I can handle it for a simple project.
+
+It is really tough to describe someone. Every human is a very complex and unique creature, but I'll try to give you a brief self-overview from professinal perspective and perhaps a bit personal.
+
+When I was a child I've been dreaming to become a writer. When I was 8 I wrote a book (20 pages) about monsters (I've been impressed by R. Stains stories). I never had a crystally clear vision of my life and never knew what my passion could be, I've been thinking about becoming bank employee and work with investmens, or work in natural science. After graduating with a degree in natural science (geography to be exact) I've been switching different jobs and looking for something interesting. This moment I discovered programming and I felt this is one of the things which I might like and I've decided to give it a try. I remembered some basic programming ideas from school where we've been doing QBasic and Borland Pascal. As you can see my passion for writing did not dissapear. Let's jump to a modern time.
+
+I started to program in Php, later I've used Javascript to build frontends, later I had a chance to work with Java and C++, later I switched to Ruby, dissapointed by the language I got back to Javascript and used Node.js to develop fullstack, after a few months of Node.js I've decided to get back to Ruby (happy moment), I spent few months in Ruby again and still had a feeling that it's not my piece of cake, so I switched to Rust and after a year got to Ruby back again with my transformed vision of what I can do with programming languages. After this I've switched to DevOps work for a moment and after that I found an intereting job in trading and started to write Rust again. Later, after I finally appreciated Rust I've made one more switch to healthcare industry, where I'm using Rust now and working with infrastructure.
+
+* Things I like about programming
+
+** Programming languages
+
+I'm interested in compiler construction. All steps from parsing to code generation. Also I'm interested in studing different approaches to expressing solution to the same problem
+
+Languages I like to look at from compiler perspective are:
+
+- Erlang :: actor-based programming
+- Ruby :: open classes, metaprogramming, interesting JIT approach, very nice and basic virtual machine.
+- Rust :: example of LLVM usage, interesting compiler, I like language design
+- GHC :: interesting compiler, very interesting language (though I don't like dependent type direction)
+- ATS :: interestign mixture of precise control over memory aspects of your programm and in the same time ability to write high-level proofs
+- C :: lingua franca (still usefull language to read Ruby, GHC and many other code bases)
+
+** Formal verification. Model checking.
+
+I'm also interested in building correct systems, here I'm studying technologies which allow to bring more quality into software systems
+
+Coq, Lean, TLA+, Isabell
+
+* T-shaped developer
+
+- iOS :: skills for programming applications for Apple ecosystem. iphone, ipad, watch. Swift programming language.
+- Android :: skills for programming applications for Android ecosystem. Mostly Kotlin, but also Java.
+- Web :: web-application programming. Simple backend, security, communication with clients. And clients implementation (i.e. React.js)
+- Backend :: complex backend systems. Building distributed systems with Message queues, Databases (sql/nosql), different styles of architecture, etc.
+- LowLevel :: operating systems, bare hands parallel and async programming
+- DevSecOps :: system administration, security, kubernetes, aws, google cloud
+- Management :: itsm, itil, agile, project management
+
+| iOs      | Android  | Web     | Backend | LowLevel | DevSecOps | Management |
+|----------+----------+---------+---------+----------+-----------+------------|
+| junior - | middle - | middle+ | senior  | middle+  | middle+   | junior+    |

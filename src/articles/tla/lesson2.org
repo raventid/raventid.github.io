@@ -1,0 +1,76 @@
+#+title: TLA+ course | Article 2
+
+In the second lesson we will keep using our clock specification and I will try to demostrate you the philosophy behind TLA+ and the whole idea of temporal logic, but first. Let me introduce a logic. I will through some fancy words at you, so you can flex and show your skills to colleagues.
+
+I will explain what is Zermelo–Fraenkel set theory and how it is connected to mathematical foundation of what we will study here. Even if you are 0 in math, worry not, I will give you only high-level information. Enough for you to understand the subject and flex your knowledge, but not enough to claim you are mathematician.
+
+Let's make sure you remember what is boolean algebra. This is one of the foundational elements of TLA+ and without this we will not be able to move forward.
+
+Let's briefly walk through boolean algebra concept:
+
+| Operation   | Mathematics             | TLA+      |
+|-------------+-------------------------+-----------|
+| Negation    | \(\neg A\)              | ~-A~      |
+| Conjunction | \(A \land B\)           | ~A /\ B~  |
+| Disjunction | \(A \lor B\)            | ~A \/ B~  |
+| Equivalence | \(A \Leftrightarrow B\) | ~A <=> B~ |
+| Implication | \(A \Rightarrow B\)     | ~A => B~  |
+
+Let's try to play around boolean algebra in TLA+
+
+Go to the eval section in TLA+ toolbox and run this code ~TRUE /\ FALSE~.
+
+Now, witness the power of TLA+. Let's build a truth tables for every expression. First, let's build a cartesian product from values. We need all pairs of TRUE and FALSE:
+
+\[ \{T, F\} \times \{T, F\} = \{\langle T, T\rangle,\ \langle T, F\rangle,\ \langle F, T\rangle,\ \langle F, F\rangle\} \]
+
+#+begin_src tla
+{TRUE, FALSE} \X {TRUE, FALSE}
+#+end_src
+
+Let's rewrite it in this way to make a binding called values. This is another way to construct a cartesian product, but this time we will add logical conjunction to every value. This way we can elegantly build a truth table for any operation.
+
+#+begin_src tla
+LET values == {TRUE, FALSE}
+IN { <<a, b, a /\ b>> : a \in values, b \in values }
+#+end_src
+
+The same way you can build whole multiplication table for a school! Look:
+
+#+begin_src tla
+LET values == {1,2,3,4,5,6,7,8,9}
+IN { <<a, b, a * b>> : a \in values, b \in values }
+#+end_src
+
+Now, play around and make sure you understand those constructions. Build a truth table for NOT (~-~) operation and OR (~\/~) operation.
+
+As you might guess truth table for OR is the same as for AND, so you just have to change ~/\~ sign to ~\/~ sign.
+
+As for the NOT operator we have to simplify the code:
+
+#+begin_src tla
+LET values == {TRUE, FALSE}
+IN { <<a, ~a>> : a \in values }
+#+end_src
+
+IMPORTANT: Even if I say now that TLA+ is easier than programming you might not believe, and if you are comming from a programming background you might still think in terms of execution of a program, how to write loops and how to write ifs.
+
+This is not how specification works, the deep insight is to embrace it's simplicity
+
+#+begin_src tla
+Init == state = 0
+
+A == /\ enabling_condition_1
+     /\ state' = -1
+
+B == /\ enabling_condition_2
+     /\ state' = 1
+
+Next == A \/ B
+#+end_src
+
+Looking at this text you might think that this spec has an execution order, Next call A or B, B call enabling_condition_2 etc. This is a wrong way to think about spec if you want to construct a logical spec. It is simpler. I am not lying.
+
+What is written here have no order. There is no evaluation here. This is formula.
+
+We say that when system goes forward in time Next is valid. Next is either A or B. A might be true, B might be true. A and B are not functions, they are a part of a big formula. It is really hard to explain with words, but try to meditate on this. If you can iternilize this idea - you mastered one of the hard parts of TLA+ (the other hard part you will find in the future)

@@ -1,0 +1,70 @@
+#+title: Provers. What are they and why you might need one?
+
+In this article I would list some of proof assitants and theorem provers and will try to explain why someone might be interested in trying one of them.
+
+- Coq
+- Agda
+- Idris
+- ATS
+- Arend
+- Isabell
+- LEAN
+- F*
+- Z3 Theorem Prover
+- Why TLA+, Alloy and others are not in the list?
+
+When you think about proving your code is correct you can right a better code. It's like with Rust. When you have a lot of Rust experience you are starting to think in terms of moving/borrowing/lifetimes when you are writing C++ or C code. Provers affect your way of thinking about the programm and things like totality, correctness and many more. In the same time writing even simple proofs might take a lot of time, so it is doubtfull that you want to do it in the same time you write code.
+
+Do we need any form of verification when we are writing some buiseness code? I mean in healthcare, travel logistics, CRM/ERP, you name it. Should we verify login form? Dashboard view? Any other thing?
+
+HERE I'M BRINGING THE DIFFERENCE BETWEEN TLA+ and LEAN and try to explain what are they
+
+* Coq
+
+Most widely used and established technology. Has a lot of great literature dedicated to it. (Link logical foundation)
+
+#+begin_src coq
+Theorem plus_O_n : forall n : nat, 0 + n = n.
+Proof.
+  intros n. simpl. reflexivity.  Qed.
+#+end_src
+
+Curry-Howard correspondence
+
+It is possible to programm in Coq in imperative style and with built in programming language you can pretty much create any software components you like
+
+Rust Belt, ComptCert and many more as an examples of real world usage
+
+* Agda
+
+Popular prover developed after Haskell with lazyness in mind. Also has a great tutorial and you would find this usefull if you already have some Haskell knowledge
+
+* Idris
+
+First language which is trying to find a practical application of dependent types. Could be used as a prover, but more a practical language with dependent types
+
+* ATS
+
+Most esoteric language among all of the contenders. Contains proof-language, language with dependent types and refinement types and many more tricks for low-level programming. You can write type-safe malloc and free with it and do type-safe pointer arithmetic. We'll take a closer look at ATS later in other articles too.
+
+* Arend
+
+Prover developed by JetBrains research. Based on HOTT approach and gives you a few intereting tricks you can use + perfect IntelliJ IDE to work in. No more Emacs!
+
+* Isabell
+
+Very practical prover. Not hyped, but people just silently do the real stuff with it. (Here gonna be the link). Also this is the only prover here which is not using dependent types and it makes it extra interesting to take a look what alternative approach do they employ
+
+Real-world applications of Isabell, as an example you can take a look at se4 operating system.
+
+* LEAN
+
+Prover developed by Microsoft Research as a response to Coq quirks. Has a very nice intro tutorial and VS Code plugin. This is one of the more practical programming lanuguages and you can easily write real programs with it, compile and run.
+
+* F*
+
+One more contender by Microsoft Research. We want stop here, but F* has been used to verify real software not so long time ago (link to network stack)
+
+* Z3 Theorem Prover
+
+* Summary
