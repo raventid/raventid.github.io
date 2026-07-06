@@ -19,10 +19,13 @@ I used to say it is also does not depend on any M$ tech, but it is hosted on git
 
 * Articles
 
-- [[file:articles/prover.org][Theorem prover. What are they and why bother?]] {{{tag(provers)}}}
-- [[file:articles/web.org][Nice language features for web development we miss in mainstream]] {{{tag(languages)}}}
-- [[file:articles/smalltalk.org][Smalltalk for a Rubyist]] {{{tag(languages)}}}
-- [[file:articles/wrong_languages.org][How to waste your time learning new programming languages]] {{{tag(languages)}}}
+- [[file:articles/sat-solver.org][Let's write a simple SAT-solver]] {{{tag(solvers)}}}
+
+# Hidden from the main page for now — uncomment to bring them back.
+# - [[file:articles/prover.org][Theorem prover. What are they and why bother?]] {{{tag(provers)}}}
+# - [[file:articles/web.org][Nice language features for web development we miss in mainstream]] {{{tag(languages)}}}
+# - [[file:articles/smalltalk.org][Smalltalk for a Rubyist]] {{{tag(languages)}}}
+# - [[file:articles/wrong_languages.org][How to waste your time learning new programming languages]] {{{tag(languages)}}}
 
 * Courses
 
