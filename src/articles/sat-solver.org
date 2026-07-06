@@ -2,7 +2,8 @@
 #+date: <2026-07-06>
 #+subtitle: July 6, 2026
 
-Hello, my dear friend, today I want walk together with you through a fanta
+Hello, my dear friend, today I invite you to join me in a fun journey on learning about SAT-solvers!
+
 Good news is that if something in this article is not detailed enough or confusing, you can work with LLM assistant to figure this out. Research shows that any modern LLM is good enough to develop SMT-solver from scratch.
 LLM2SMT: Building an SMT Solver with Zero Human-Written Code https://arxiv.org/pdf/2603.06931
 
