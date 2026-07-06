@@ -1,27 +1,50 @@
 #+title: Provers. What are they and why you might need one?
 
-In this article I would list some of proof assitants and theorem provers and will try to explain why someone might be interested in trying one of them.
+# NOTE(claude): iteration 1 of the research pass. Everything with a footnote is
+# verified against a primary source (links checked on 2026-07-06). My editorial
+# notes to you are org comments like this one — they do not appear in the HTML.
+# Your original sentences are kept wherever possible; feel free to reshape.
 
-- Coq
+In this article I would list some of proof assistants and theorem provers and will try to explain why someone might be interested in trying one of them.
+
+- Rocq (the artist formerly known as Coq)
 - Agda
 - Idris
 - ATS
 - Arend
-- Isabell
-- LEAN
+- Isabelle
+- Lean 4
 - F*
 - Z3 Theorem Prover
 - Why TLA+, Alloy and others are not in the list?
 
-When you think about proving your code is correct you can right a better code. It's like with Rust. When you have a lot of Rust experience you are starting to think in terms of moving/borrowing/lifetimes when you are writing C++ or C code. Provers affect your way of thinking about the programm and things like totality, correctness and many more. In the same time writing even simple proofs might take a lot of time, so it is doubtfull that you want to do it in the same time you write code.
+When you think about proving your code is correct you can write a better code. It's like with Rust. When you have a lot of Rust experience you are starting to think in terms of moving/borrowing/lifetimes when you are writing C++ or C code. Provers affect your way of thinking about the program and things like totality, correctness and many more. In the same time writing even simple proofs might take a lot of time, so it is doubtful that you want to do it in the same time you write code.
 
-Do we need any form of verification when we are writing some buiseness code? I mean in healthcare, travel logistics, CRM/ERP, you name it. Should we verify login form? Dashboard view? Any other thing?
+Do we need any form of verification when we are writing some business code? I mean in healthcare, travel logistics, CRM/ERP, you name it. Should we verify login form? Dashboard view? Any other thing?
 
-HERE I'M BRINGING THE DIFFERENCE BETWEEN TLA+ and LEAN and try to explain what are they
+# NOTE(claude): your draft said "HERE I'M BRINGING THE DIFFERENCE BETWEEN TLA+
+# and LEAN". This section is that difference, sourced. It also pre-answers the
+# "why TLA+/Alloy are not in the list" question from your bullet list.
 
-* Coq
+* First, what counts as a "prover" here?
 
-Most widely used and established technology. Has a lot of great literature dedicated to it. (Link logical foundation)
+Before the list, one clarification, because the words "formal methods" cover three very different kinds of tools, and mixing them up is the most common confusion in this area. Let me give you my taxonomy:
+
+1. *Interactive theorem provers* (also called proof assistants): Rocq, Lean, Isabelle, Agda... A human writes a proof — as a program term or as a tactic script — and the machine checks every step. You can prove an /unbounded/ statement: "this compiler is correct for every valid C program", "every finite group of odd order is solvable". The price is manual effort: the landmark results below took person-years to person-decades.
+
+2. *Model checkers and specification tools*: TLA+ with its TLC checker, Alloy. You do not verify a program at all — you write an abstract /specification of a design/ (a state machine), and the tool exhaustively explores every behavior of a /finite instance/ of it (say, 3 nodes and 2 messages in flight). Fully automatic, brutally effective at finding design bugs, but the deliverable is a debugged design, not a theorem. Lamport himself frames TLA+ as a blueprint tool: it is "useful for eliminating fundamental design errors, which are hard to find and expensive to correct in code"[fn:lamport-tla]. The famous industrial user here is Amazon: their CACM paper describes pitching TLA+ to engineers as "exhaustively testable pseudo-code" while deliberately avoiding the words "formal", "verification" and "proof" — and finding a DynamoDB bug whose shortest error trace was 35 steps long[fn:aws]. Amazon also evaluated Alloy first and found it "not expressive enough for many of our use cases" — which tells you practitioners themselves put TLA+ and Alloy in the same category, separate from proof assistants[fn:aws].
+
+3. *SMT solvers*: Z3 is the canonical one. Fully automatic decision procedures for restricted logical fragments (arithmetic, bit-vectors, arrays...). You do not write proofs in Z3 — you hand it a formula and get back sat/unsat. It is not an end-user proving environment but the /engine/ that other verifiers are built on: Dafny, F*, Liquid Haskell, Why3 — and even TLAPS, the TLA+ proof system — all discharge their obligations to Z3 or its cousins[fn:z3].
+
+So TLA+ and Alloy are not in the list not because they are bad (they are wonderful), but because they answer a different question. This article is about category 1, with a guest appearance of category 3 at the end. If you want a deeper map of the interactive-prover world, the standard survey is "QED at Large"[fn:qed].
+
+To be fair about the labels: Z3's own repository calls it "a theorem prover", and TLA+ does ship a proof system (TLAPS). The honest distinction is not the name but the workflow and the deliverable: in category 1 a human constructs a machine-checked proof of an unbounded statement; in category 2 a machine exhaustively checks a bounded instance of a design; in category 3 a machine decides a formula in a restricted fragment.
+
+* Rocq (formerly Coq)
+
+Most widely used and established technology. Has a lot of great literature dedicated to it — the canonical entry point is the Software Foundations series, whose first volume, Logical Foundations, is a literate proof script you can execute chapter by chapter[fn:sf].
+
+Yes, about the name: Coq was renamed. The discussion started in 2021 (the English slang reading of the old name was scaring off newcomers, notably students), the decision was announced in October 2023, and the rename became official with the release of Rocq 9.0 on March 12, 2025. The new name honors Inria Rocquencourt, where the tool was born, and keeps a bird in the house via the mythical Roc[fn:rocq-rename].
 
 #+begin_src coq
 Theorem plus_O_n : forall n : nat, 0 + n = n.
@@ -29,42 +52,233 @@ Proof.
   intros n. simpl. reflexivity.  Qed.
 #+end_src
 
-Curry-Howard correspondence
+It is based on the Curry-Howard correspondence: propositions are types, proofs are programs. It is possible to program in Coq in a fairly ordinary functional style, and a distinctive superpower the project itself advertises is /extraction/: you prove your program correct and extract certified OCaml, Haskell or Scheme from the proof development[fn:rocq-about].
 
-It is possible to programm in Coq in imperative style and with built in programming language you can pretty much create any software components you like
+*What it is best at.* Verified software and programming-language metatheory. If a POPL paper comes with a mechanized proof, the default vehicle is Rocq. The classical examples:
 
-Rust Belt, ComptCert and many more as an examples of real world usage
+- /CompCert/ — a formally verified optimizing C compiler by Xavier Leroy's team, started around 2005, commercially supported today. The correctness theorem covers the whole way from C source to assembly[fn:compcert].
+- /The Four Color Theorem/ — Georges Gonthier and Benjamin Werner machine-checked the famously computer-assisted proof, completed 2004–2005[fn:fourcolor].
+- /Feit–Thompson (Odd Order) Theorem/ — Gonthier's team formalized this landmark of finite group theory in 2012, building the Mathematical Components library along the way[fn:oddorder].
+- /Iris/ — the higher-order concurrent separation logic framework, now the standard substrate for mechanized concurrency proofs[fn:iris], and on top of it /RustBelt/ — the first machine-checked foundations for Rust, proving that the =unsafe= internals of the standard library are safely encapsulated[fn:rustbelt].
+- /CertiKOS/ — the first functional-correctness proof of a complete concurrent OS kernel, from Yale[fn:certikos].
+
+*The authors on the competition.* Funny enough, the Rocq team is the quietest of them all: the official FAQ merely lists Isabelle, HOL, Nuprl and PVS as "provers that are fairly similar to Coq by the way they interact with the user", and the comparison page in the official wiki mostly discusses how to encode other systems' logics into Coq[fn:coq-faq]. The sharpest official comparison text involving Rocq actually lives in /Lean's/ FAQ — see below.
+
+*Where to start:* Software Foundations, Volume 1: Logical Foundations[fn:sf].
 
 * Agda
 
-Popular prover developed after Haskell with lazyness in mind. Also has a great tutorial and you would find this usefull if you already have some Haskell knowledge
+Popular prover developed after Haskell with laziness in mind. Also has a great tutorial and you would find this useful if you already have some Haskell knowledge.
+
+*What it is best at.* Dependently-typed /programming as proving/. The official documentation defines Agda as "a dependently typed programming language" that "can be used as a proof assistant" — in that order[fn:agda-docs]. There is no separate tactic language: you write proof terms by hand, interactively, refining typed holes in the editor. The official wiki's own comparison page is refreshingly blunt about the trade: Coq proofs "can be much shorter, while Agda proofs are often more readable", and Agda is deliberately more experimental — you can even switch off termination checking, "making a system possibly inconsistent, but more suitable for experimentation"[fn:agdavscoq]. Agda is also, via the =--cubical= extension, the leading practical vehicle for homotopy type theory: cubical Agda makes univalence and higher inductive types actually /compute/[fn:cubical].
+
+*Classical examples:*
+
+- /Programming Language Foundations in Agda (PLFA)/ — Wadler, Kokke and Siek's open-source textbook that teaches PL theory entirely in Agda, released 2018[fn:plfa].
+- /agda-unimath/ — a large community formalization of univalent mathematics, launched 2021[fn:agda-unimath].
+
+*The authors on the competition.* Ulf Norell's 2007 PhD thesis, in which Agda 2 was designed, positions it explicitly: Cayenne made type checking undecidable by admitting general recursion; Epigram's programming model was "a great inspiration" but its implementation "has not yet reached a level where it can be used for writing bigger programs"; Haskell GADTs and Dependent ML "only support a limited form of type dependencies". Agda's stated contribution was "proving that practical programming with dependent types is within our reach"[fn:norell].
+
+*Where to start:* PLFA[fn:plfa].
 
 * Idris
 
-First language which is trying to find a practical application of dependent types. Could be used as a prover, but more a practical language with dependent types
+First language which is trying to find a practical application of dependent types. Could be used as a prover, but is more a practical language with dependent types — and its author says so himself: the defining JFP paper states that Idris "is intended to be a general purpose programming language", which is why it deliberately gives up Haskell-style full type inference — with dependent types, the types /are/ the specification, so you want to write them[fn:idris-jfp].
+
+*What it is best at.* Type-driven development of ordinary software with dependent types: length-indexed vectors, type-safe =printf=, protocols and state machines encoded in types. Idris 2 adds a genuinely new trick — it is "the first implementation of quantitative type theory in a full programming language": every variable carries a multiplicity 0, 1 or ω, so the types can guarantee that a value is erased at runtime or used exactly once (hello, linear session-typed channels)[fn:idris2]. Idris 2 is also self-hosted — "the first language with full first-class dependent types implemented in itself"[fn:idris2].
+
+*The authors on the competition.* Brady's papers have honest related-work sections: against Agda, he notes Agda bakes metavariables and implicit arguments into the type theory itself, which makes implicits more flexible "at the expense of complicating the type system", whereas Idris elaborates down to a tiny core kernel; against Rust, he positions QTT as the cleaner way to combine linear and dependent types "with no restrictions on whether variables are used in types or terms"[fn:idris-jfp][fn:idris2].
+
+*Where to start:* Type-Driven Development with Idris, Brady's own book[fn:tdd].
 
 * ATS
 
-Most esoteric language among all of the contenders. Contains proof-language, language with dependent types and refinement types and many more tricks for low-level programming. You can write type-safe malloc and free with it and do type-safe pointer arithmetic. We'll take a closer look at ATS later in other articles too.
+Most esoteric language among all of the contenders. Contains a proof language, a language with dependent types and refinement types and many more tricks for low-level programming. You can write type-safe =malloc= and =free= with it and do type-safe pointer arithmetic. We'll take a closer look at ATS later in other articles too.
+
+*What it is best at.* Low-level systems programming where the proofs live next to C-level code. ATS ("Applied Type System", Hongwei Xi) compiles to C and combines dependent types with linear types, which is exactly the combination you need to track memory ownership at compile time. Xi's own papers position ATS against pure type theory: the design separates the statics from the dynamics precisely to keep dependent types practical for programming, an approach he calls "programming with theorem-proving"[fn:ats-types]. Its signature demo used to be the Computer Language Benchmarks Game, where a past version of the game showed ATS running head-to-head with C and C++ — worth phrasing as history, since ATS is no longer in the current game[fn:ats-wiki]. The largest ATS artifact is the ATS2 compiler itself, over 180,000 lines of ATS[fn:ats2], and ATS3 development is still alive in 2026[fn:ats3].
+
+*Where to start:* Introduction to Programming in ATS, Xi's official book[fn:ats-book].
 
 * Arend
 
-Prover developed by JetBrains research. Based on HOTT approach and gives you a few intereting tricks you can use + perfect IntelliJ IDE to work in. No more Emacs!
+Prover developed by JetBrains Research. Based on the HoTT approach and gives you a few interesting tricks + a perfect IntelliJ IDE to work in. No more Emacs![fn:arend-about]
 
-* Isabell
+*What it is best at.* Being a /HoTT-native/ prover with industrial IDE polish. Arend implements a homotopy type theory with a primitive interval type ("which syntax is similar to cubical type theory", say the docs), which per its authors gives "a simple and clean definition of higher inductive types (including recursive ones)" — the comparison with cubical Agda and Coq's axiomatic HoTT library is implicit but real: there, univalence is a flag or an axiom; here it is the native foundation[fn:arend-about]. The standard library, arend-lib, covers algebra, category theory, homotopy theory and topology in HoTT style[fn:arend-lib].
 
-Very practical prover. Not hyped, but people just silently do the real stuff with it. (Here gonna be the link). Also this is the only prover here which is not using dependent types and it makes it extra interesting to take a look what alternative approach do they employ
+# NOTE(claude): honesty check — I verified the repos: no release since v1.10
+# (July 2024) and no commits since ~February 2025. Not archived, but ~16 months
+# of silence. I'd keep the section (it is a genuinely interesting design) but
+# the article shouldn't sell it as an active horse. Kept a soft warning below —
+# reword or delete as you see fit.
 
-Real-world applications of Isabell, as an example you can take a look at se4 operating system.
+A word of caution: as of mid-2026 the project looks dormant — the last release was in July 2024 and the repositories have been quiet since early 2025. A beautiful design to study, but maybe not the horse to bet a project on.
 
-* LEAN
+*Where to start:* the official documentation and tutorial[fn:arend-doc].
 
-Prover developed by Microsoft Research as a response to Coq quirks. Has a very nice intro tutorial and VS Code plugin. This is one of the more practical programming lanuguages and you can easily write real programs with it, compile and run.
+* Isabelle
+
+Very practical prover. Not hyped, but people just silently do the real stuff with it. Also this is the only prover in this list which is not using dependent types, and it makes it extra interesting to take a look at what alternative approach they employ.
+
+*What it is best at.* Industrial-strength verification with the best automation in the business. Isabelle/HOL's foundation is classical /simple/ type theory — Church's higher-order logic, no dependent types — and the payoff for that conservatism is Sledgehammer: one command that ships your goal to a fleet of automatic provers (E, Vampire, Z3, cvc5) and reconstructs whatever they find as a checked Isabelle proof. Its Isar proof language reads closer to mathematical prose than any tactic script. And its library, the Archive of Formal Proofs, is a refereed journal of proof developments — as of 2026, nearly a thousand entries and over five million lines of proof[fn:afp].
+
+*Classical examples:*
+
+- /seL4/ — the first formal proof of functional correctness of a general-purpose OS kernel (2009): 8,700 lines of C and 600 lines of assembler, verified by roughly 200,000 lines of Isabelle proof. The verification process found 144 bugs in an early version of the C code[fn:sel4].
+- /Flyspeck/ — the formal verification of Hales's proof of the Kepler conjecture, completed 2014. The main body was done in HOL Light; Isabelle's part was the verified enumeration of tame planar graphs[fn:flyspeck].
+
+*The authors on the competition.* This is the goldmine of the whole genre. Lawrence Paulson, Isabelle's original author, writes a blog where he takes on the comparison directly: "Why not just use Lean?" (2026) grants Lean its great language, tools and enthusiastic community, then argues Isabelle offers "the best automation anywhere" and more legible proofs — and pointedly notes that dependent types are discouraged even inside Lean's own mathlib[fn:paulson-lean]. In "Why don't you use dependent types?" (2025) and the paper "Formalising Mathematics in Simple Type Theory" he argues Church's 1940 logic is enough for serious mathematics[fn:paulson-dep][fn:paulson-stt]. And when people claimed Grothendieck's schemes /require/ dependent types, his group formalized schemes in Isabelle/HOL, showing "the powerful dependent types of Coq or Lean can be traded for a minimalist apparatus called locales"[fn:schemes].
+
+*Where to start:* Concrete Semantics by Nipkow and Klein — part I is the standard "Programming and Proving in Isabelle/HOL" tutorial[fn:concrete].
+
+* Lean 4
+
+Prover started at Microsoft Research by Leonardo de Moura (Lean's home today is the Lean FRO). Has a very nice intro tutorial and VS Code plugin. This is one of the more practical of these languages and you can easily write real programs with it, compile and run.
+
+# NOTE(claude): your draft said Lean was "a response to Coq quirks" — I didn't
+# find an authors' source stating it that way, so I softened the origin story.
+# If you have a source for that framing, bring it back with a footnote.
+
+*What it is best at.* Formalizing research-level mathematics at scale — Lean is the prover working mathematicians actually adopted. The gravitational center is mathlib, the community-built library: over 1.5 million lines, on the order of 200,000 theorems, 500+ contributors[fn:mathlib]. Because the mathematicians are there, the AI-for-math people are there too: DeepMind's AlphaProof, which reached silver-medal standard at IMO 2024, proves its statements in Lean[fn:alphaproof]. Lean 4's second story is that it is a genuine general-purpose programming language, implemented in itself, where users can extend the parser, elaborator and tactics in the same language they prove in[fn:lean4cade].
+
+*Classical examples:*
+
+- /Liquid Tensor Experiment/ — Peter Scholze challenged the community in December 2020 to formalize his hardest recent theorem (condensed mathematics); completed July 2022, widely cited as the moment formalization reached the frontier of research math[fn:lte]. (Honesty note: this one, like the sphere eversion project, was done in the Lean 3 era.)
+- /PFR conjecture/ — Terence Tao led a crowdsourced Lean 4 formalization of the freshly-proved Polynomial Freiman–Ruzsa conjecture in roughly three weeks in late 2023 — the canonical example of formalizing a result almost as soon as it is proved[fn:pfr].
+- /Fermat's Last Theorem/ — Kevin Buzzard's team at Imperial is formalizing Wiles/Taylor–Wiles in Lean 4; started 2024, ongoing[fn:flt].
+
+*The authors on the competition.* The official FAQ has literally the sections we want: "Is Lean just like Rocq?" (similar type-theoretic foundations — both are descendants of the Calculus of Inductive Constructions — but Lean commits to definitional proof irrelevance, "scalability, automation, and a focus on classical logic") and "Is Lean just like Isabelle?" (dependent type theory with explicit proof terms and a small kernel vs. Isabelle's HOL-and-LCF approach; the FAQ argues — partisan claim, mind you — that dependent types suit mathematics better)[fn:lean-faq]. The system papers, CADE-25 for Lean's debut ("bridge the gap between interactive and automated theorem proving") and CADE-28 for Lean 4 (full extensibility as the differentiator from other ITPs), complete the picture[fn:leancade][fn:lean4cade].
+
+*Where to start:* the official recommendation for absolute beginners is the Natural Number Game[fn:nng]; the books are Theorem Proving in Lean 4 and, for programmers, Functional Programming in Lean[fn:lean-books].
 
 * F*
 
-One more contender by Microsoft Research. We want stop here, but F* has been used to verify real software not so long time ago (link to network stack)
+One more contender by Microsoft Research (together with Inria). F* has been used to verify real software that you are, right now, running: code from the HACL* verified cryptographic library ships in Firefox's NSS, the Linux kernel (via WireGuard's Curve25519), and — since Python 3.12 — CPython's =hashlib= falls back to HACL* implementations of SHA-2/SHA-3/MD5 when OpenSSL doesn't provide them[fn:hacl][fn:hacl-python].
+
+*What it is best at.* Proof-oriented programming with SMT muscle. F*'s own book states the positioning perfectly: "F*'s dependent types are similar in expressiveness to Coq, Lean, Agda, or Idris", but "F*'s use of an SMT solver for proof automation is unique among languages with dependent types" — you write a dependently-typed program, and Z3 discharges most proof obligations silently[fn:fstar-book]. Verified code extracts to OCaml, C (via KaRaMeL) and even assembly. The flagship is Project Everest (2016–2021), the verified-HTTPS-stack umbrella that produced HACL*, EverCrypt and miTLS[fn:everest]. The same book is also honest about the trade: "relatively little pure mathematics has been formalized in F*", and Isabelle and Coq are more mature tools[fn:fstar-book].
+
+*Where to start:* Proof-Oriented Programming in F*, the official book by Swamy, Martínez and Rastogi[fn:fstar-book].
 
 * Z3 Theorem Prover
 
+After the taxonomy section you already know the punchline: Z3 is not an interactive prover, it is the automatic engine under everyone else's hood. Developed at Microsoft Research by Leonardo de Moura (yes, the same one — he built Z3, then went off to build Lean) and Nikolaj Bjørner, presented in the classic TACAS 2008 paper[fn:z3]. You give it a first-order formula over arithmetic, bit-vectors, arrays; it answers sat or unsat. No tactics, no proof scripts. Dafny, F*, Liquid Haskell, Why3 and even TLA+'s proof system all stand on it. If interactive provers are mathematicians, Z3 is the calculator they all keep in the drawer.
+
 * Summary
+
+# NOTE(claude): left for your voice — my suggestion for the skeleton: one line
+# per tool ("if you want X, pick Y"), then your answer to the business-code
+# question from the intro. Raw material: Rocq = verified software & PL
+# metatheory; Agda = programming-as-proving & HoTT experiments; Idris =
+# type-driven practical programming; ATS = proofs next to pointer arithmetic;
+# Arend = HoTT with an IDE (dormant); Isabelle = automation & industrial
+# verification without dependent types; Lean = research mathematics at scale;
+# F* = verified code that actually ships; Z3 = the engine underneath.
+
+# Footnote definitions below are collected by org-html export into a final
+# "References" section automatically (see org-html-footnotes-section in
+# publish.el) — no explicit heading needed here.
+
+[fn:lamport-tla] Leslie Lamport, "The TLA+ Home Page", https://lamport.azurewebsites.net/tla/tla.html. See also: Leslie Lamport, /Specifying Systems: The TLA+ Language and Tools for Hardware and Software Engineers/, Addison-Wesley, 2002, free from the author: https://lamport.azurewebsites.net/tla/book.html
+
+[fn:aws] Chris Newcombe, Tim Rath, Fan Zhang, Bogdan Munteanu, Marc Brooker, Michael Deardeuff, "How Amazon Web Services Uses Formal Methods", /Communications of the ACM/ 58(4), 2015. Free pre-print: https://lamport.azurewebsites.net/tla/formal-methods-amazon.pdf
+
+[fn:z3] Leonardo de Moura, Nikolaj Bjørner, "Z3: An Efficient SMT Solver", /TACAS 2008/, LNCS 4963, Springer, 2008. https://link.springer.com/chapter/10.1007/978-3-540-78800-3_24 · code: https://github.com/Z3Prover/z3
+
+[fn:qed] Talia Ringer, Karl Palmskog, Ilya Sergey, Milos Gligoric, Zachary Tatlock, "QED at Large: A Survey of Engineering of Formally Verified Software", /Foundations and Trends in Programming Languages/ 5(2–3), 2019. https://arxiv.org/abs/2003.06458
+
+[fn:sf] Benjamin C. Pierce et al., /Software Foundations, Volume 1: Logical Foundations/. https://softwarefoundations.cis.upenn.edu/
+
+[fn:rocq-rename] Théo Zimmermann (for the dev team), "Renaming Coq", Rocq Discourse, April 2021, https://discourse.rocq-prover.org/t/renaming-coq/1264 · Rocq 9.0 release notes (March 12, 2025): https://rocq-prover.org/releases/9.0.0
+
+[fn:rocq-about] "About Rocq", https://rocq-prover.org/about
+
+[fn:compcert] Xavier Leroy, "Formal certification of a compiler back-end", /POPL 2006/. Project: https://compcert.org
+
+[fn:fourcolor] Georges Gonthier, "Formal Proof — The Four-Color Theorem", /Notices of the AMS/ 55(11), 2008. Maintained formalization: https://github.com/coq-community/fourcolor
+
+[fn:oddorder] Georges Gonthier et al., "A Machine-Checked Proof of the Odd Order Theorem", /ITP 2013/. https://github.com/math-comp/odd-order
+
+[fn:iris] Ralf Jung et al., "Iris: Monoids and Invariants as an Orthogonal Basis for Concurrent Reasoning", /POPL 2015/. https://iris-project.org/
+
+[fn:rustbelt] Ralf Jung, Jacques-Henri Jourdan, Robbert Krebbers, Derek Dreyer, "RustBelt: Securing the Foundations of the Rust Programming Language", /POPL 2018/. https://plv.mpi-sws.org/rustbelt/
+
+[fn:certikos] Ronghui Gu, Zhong Shao et al., "CertiKOS: An Extensible Architecture for Building Certified Concurrent OS Kernels", /OSDI 2016/. https://flint.cs.yale.edu/certikos/
+
+[fn:coq-faq] "The Coq FAQ", question "What are the other theorem provers?", https://www.cs.yale.edu/flint/cs428/coq/doc/faq.html · community wiki "ComparisonWithOtherSystems": https://github.com/rocq-prover/rocq/wiki/ComparisonWithOtherSystems
+
+[fn:agda-docs] "What is Agda?", official documentation, https://agda.readthedocs.io/en/latest/getting-started/what-is-agda.html
+
+[fn:agdavscoq] "AgdaVsCoq", The Agda Wiki, https://wiki.portal.chalmers.se/agda/Main/AgdaVsCoq
+
+[fn:cubical] Andrea Vezzosi, Anders Mörtberg, Andreas Abel, "Cubical Agda: A Dependently Typed Programming Language with Univalence and Higher Inductive Types", /ICFP 2019/. https://dl.acm.org/doi/10.1145/3341691
+
+[fn:norell] Ulf Norell, /Towards a practical programming language based on dependent type theory/, PhD thesis, Chalmers University of Technology, 2007. https://www.cse.chalmers.se/~ulfn/papers/thesis.pdf
+
+[fn:plfa] Philip Wadler, Wen Kokke, Jeremy G. Siek, /Programming Language Foundations in Agda/, 2018–. https://plfa.github.io
+
+[fn:agda-unimath] Egbert Rijke et al., /agda-unimath/, 2021–. https://unimath.github.io/agda-unimath/
+
+[fn:idris-jfp] Edwin Brady, "Idris, a general-purpose dependently typed programming language: Design and implementation", /Journal of Functional Programming/ 23(5), 2013. https://doi.org/10.1017/S095679681300018X
+
+[fn:idris2] Edwin Brady, "Idris 2: Quantitative Type Theory in Practice", /ECOOP 2021/, LIPIcs 194. https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ECOOP.2021.9
+
+[fn:tdd] Edwin Brady, /Type-Driven Development with Idris/, Manning, 2017. https://www.manning.com/books/type-driven-development-with-idris
+
+[fn:ats-types] Hongwei Xi, "Applied Type System (extended abstract)", /TYPES 2003/, LNCS 3085, Springer, 2004. Expanded version: "Applied Type System: An Approach to Practical Programming with Theorem-Proving", https://arxiv.org/abs/1703.08683
+
+[fn:ats-wiki] "ATS (programming language)", Wikipedia (for the historical Benchmarks Game results), https://en.wikipedia.org/wiki/ATS_(programming_language)
+
+[fn:ats2] ATS2 (ATS/Postiats) repository, https://github.com/githwxi/ATS-Postiats
+
+[fn:ats3] ATS3 (ATS/Xanadu) repository, https://github.com/githwxi/ATS-Xanadu
+
+[fn:ats-book] Hongwei Xi, /Introduction to Programming in ATS/. https://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/HTML/book1.html
+
+[fn:arend-about] "About Arend", JetBrains Research, https://arend-lang.github.io/about/
+
+[fn:arend-lib] arend-lib repository, https://github.com/JetBrains/arend-lib · releases: https://github.com/JetBrains/Arend/releases
+
+[fn:arend-doc] Arend documentation and tutorial, https://arend-lang.github.io/documentation/
+
+[fn:afp] Archive of Formal Proofs, statistics page, https://www.isa-afp.org/statistics/ (996 entries, ~5.25M lines of proof as of July 2026)
+
+[fn:sel4] Gerwin Klein et al., "seL4: Formal Verification of an Operating-System Kernel", /SOSP 2009/ / /CACM/ 2010. https://sel4.systems/Verification/ · proofs: https://github.com/seL4/l4v
+
+[fn:flyspeck] Thomas Hales et al., "A Formal Proof of the Kepler Conjecture", /Forum of Mathematics, Pi/ 5, 2017. https://arxiv.org/abs/1501.02155
+
+[fn:paulson-lean] Lawrence C. Paulson, "Why not just use Lean?", /Machine Logic/ blog, April 23, 2026. https://lawrencecpaulson.github.io/2026/04/23/Why_not_Lean.html
+
+[fn:paulson-dep] Lawrence C. Paulson, "Why don't you use dependent types?", /Machine Logic/ blog, November 2, 2025. https://lawrencecpaulson.github.io/2025/11/02/Why-not-dependent.html
+
+[fn:paulson-stt] Lawrence C. Paulson, "Formalising Mathematics in Simple Type Theory", 2018, in /Reflections on the Foundations of Mathematics/, Springer, 2019. https://arxiv.org/abs/1804.07860
+
+[fn:schemes] Anthony Bordg, Lawrence Paulson, Wenda Li, "Simple Type Theory is not too Simple: Grothendieck's Schemes without Dependent Types", /Experimental Mathematics/ 31(2), 2022. https://arxiv.org/abs/2104.09366
+
+[fn:concrete] Tobias Nipkow, Gerwin Klein, /Concrete Semantics: With Isabelle/HOL/, Springer, 2014. Free PDF: https://www21.in.tum.de/~nipkow/Concrete-Semantics/
+
+[fn:mathlib] mathlib4 repository, https://github.com/leanprover-community/mathlib4
+
+[fn:alphaproof] Google DeepMind, "AI achieves silver-medal standard solving International Mathematical Olympiad problems", July 2024. https://deepmind.google/blog/ai-solves-imo-problems-at-silver-medal-level/
+
+[fn:lte] "The Liquid Tensor Experiment: completed!", Lean community blog, July 2022. https://leanprover-community.github.io/blog/posts/lte-final/
+
+[fn:pfr] Terence Tao et al., PFR formalization repository, 2023. https://github.com/teorth/pfr
+
+[fn:flt] Kevin Buzzard et al., Fermat's Last Theorem formalization project, 2024–. https://github.com/ImperialCollegeLondon/FLT
+
+[fn:lean-faq] "Frequently Asked Questions", lean-lang.org — sections "Is Lean just like Rocq?" and "Is Lean just like Isabelle?". https://lean-lang.org/faq/
+
+[fn:leancade] Leonardo de Moura, Soonho Kong, Jeremy Avigad, Floris van Doorn, Jakob von Raumer, "The Lean Theorem Prover (System Description)", /CADE-25/, LNCS 9195, 2015. https://doi.org/10.1007/978-3-319-21401-6_26
+
+[fn:lean4cade] Leonardo de Moura, Sebastian Ullrich, "The Lean 4 Theorem Prover and Programming Language", /CADE-28/, LNCS 12699, 2021. https://doi.org/10.1007/978-3-030-79876-5_37
+
+[fn:nng] The Natural Number Game, https://adam.math.hhu.de/#/g/leanprover-community/NNG4
+
+[fn:lean-books] /Theorem Proving in Lean 4/, https://lean-lang.org/theorem_proving_in_lean4/ · /Functional Programming in Lean/, https://lean-lang.org/functional_programming_in_lean/
+
+[fn:hacl] Jean-Karim Zinzindohoué, Karthikeyan Bhargavan, Jonathan Protzenko, Benjamin Beurdouche, "HACL*: A Verified Modern Cryptographic Library", /ACM CCS 2017/. https://eprint.iacr.org/2017/536 · deployment list: https://hacl-star.github.io/
+
+[fn:hacl-python] CPython: HACL* fallback implementations in hashlib since Python 3.12, https://github.com/python/cpython/issues/99108
+
+[fn:everest] "Everest: Towards a Verified, Drop-in Replacement of HTTPS", /SNAPL 2017/. Project page: https://project-everest.github.io/
+
+[fn:fstar-book] Nikhil Swamy, Guido Martínez, Aseem Rastogi, /Proof-Oriented Programming in F*/, official book, https://fstar-lang.org/tutorial/ (comparison quotes: introduction chapter, https://fstar-lang.org/tutorial/book/intro.html). The design paper: Swamy et al., "Dependent Types and Multi-Monadic Effects in F*", /POPL 2016/, https://fstar-lang.org/papers/mumon/

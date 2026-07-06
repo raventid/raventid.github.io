@@ -110,6 +110,19 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Scale the whole rem-based layout up on larger screens: text, the 44rem
+   reading column, and code blocks all grow in proportion. */
+@media (min-width: 60rem) {
+  html {
+    font-size: 17.5px;
+  }
+}
+@media (min-width: 80rem) {
+  html {
+    font-size: 19px;
+  }
+}
+
 body {
   margin: 0 auto;
   padding: 1.6rem 1.25rem 4rem;
@@ -291,6 +304,27 @@ img {
   margin-left: 0.35em;
   position: relative;
   top: -0.1em;
+  white-space: nowrap;
+}
+
+/* Article freshness date on index entries */
+.entry-date {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  margin-left: 0.35em;
+  white-space: nowrap;
+}
+.entry-date::before {
+  content: "· ";
+}
+
+/* Inline logical formulas ({{{f(...)}}} in org) — set like book math:
+   italic serif, same ink as prose, kept on one line. */
+.formula {
+  font-style: italic;
   white-space: nowrap;
 }
 

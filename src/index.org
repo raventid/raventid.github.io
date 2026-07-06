@@ -19,7 +19,7 @@ I used to say it is also does not depend on any M$ tech, but it is hosted on git
 
 * Articles
 
-- [[file:articles/sat-solver.org][Let's write a simple SAT-solver]] {{{tag(solvers)}}}
+- [[file:articles/sat-solver.org][Let's write a simple SAT-solver]] {{{tag(solvers)}}} {{{date(Jul 2026)}}}
 
 # Hidden from the main page for now — uncomment to bring them back.
 # - [[file:articles/prover.org][Theorem prover. What are they and why bother?]] {{{tag(provers)}}}

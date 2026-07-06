@@ -48,7 +48,11 @@
       org-export-with-toc nil
       org-export-time-stamp-file nil
       org-export-global-macros
-      '(("tag" . "@@html:<span class=\"tag\">$1</span>@@")))
+      '(("tag" . "@@html:<span class=\"tag\">$1</span>@@")
+        ("date" . "@@html:<span class=\"entry-date\">$1</span>@@")
+        ;; Inline logical formula; the argument stays outside the raw-HTML
+        ;; snippets so org still processes x_{1} subscripts and entities.
+        ("f" . "@@html:<span class=\"formula\">@@$1@@html:</span>@@")))
 
 (setq org-html-doctype "html5"
       org-html-html5-fancy t
@@ -62,7 +66,11 @@
       ;; Emacs fontifies the code and emits class names (org-keyword,
       ;; org-string, ...) that assets/styles.css colors.
       org-html-htmlize-output-type 'css
-      org-html-htmlize-font-prefix "org-")
+      org-html-htmlize-font-prefix "org-"
+      ;; Footnote definitions render as a closing "References" section.
+      ;; ox-html passes (title definitions); %.0s consumes the stock title.
+      org-html-footnotes-section
+      "<div id=\"footnotes\">\n<h2 class=\"footnotes\">References%.0s</h2>\n<div id=\"text-footnotes\">\n%s\n</div>\n</div>")
 
 (defvar site-html-head
   (concat

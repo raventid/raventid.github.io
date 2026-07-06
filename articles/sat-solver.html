@@ -45,15 +45,15 @@ Though I assume if you use such a language you know those tricks.
 First, let&rsquo;s create a new Cargo project, where we will implement our SAT-solver.
 </p>
 
-<p>
+<pre class="example" id="org79b7efc">
 smt-rs git:(main) cargo init
     Creating binary (application) package
-note: see more `Cargo.toml` keys and their definitions at <a href="https://doc.rust-lang.org/cargo/reference/manifest.html">https://doc.rust-lang.org/cargo/reference/manifest.html</a>
-</p>
+note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+</pre>
 
 
 <p>
-Before we write some code, let&rsquo;s figure out what SAT-solver should do. SAT asks: given a Boolean formula over variables x1, x2, …, is there a true/false assignment that makes the whole formula true?
+Before we write some code, let&rsquo;s figure out what SAT-solver should do. SAT asks: given a Boolean formula over variables x<sub>1</sub>, x<sub>2</sub>, …, is there an assignment of <code>true</code> and <code>false</code> values that makes the whole formula <code>true</code>?
 </p>
 
 <p>
@@ -69,7 +69,7 @@ We will implement DPLL (Davis–Putnam–Logemann–Loveland, 1962), which is th
 </p>
 
 <p>
-You might be a bit confused by terms like ``forced`` ``CNF`` and a few other ideas. This is quite normal and we will elaborate on every topic later, because it is easier to understand SAT from a practical example that a theory. Later, after finishing this article you can get back to those first paragraphs and it will be cristally clear to you.
+You might be a bit confused by terms like <code>forced</code> and <code>CNF</code> and a few other ideas. This is quite normal and we will elaborate on every topic later, because it is easier to understand SAT from a practical example that a theory. Later, after finishing this article you can get back to those first paragraphs and it will be cristally clear to you.
 </p>
 
 <p>
@@ -78,7 +78,7 @@ So let me show you some pieces of code.
 
 
 <p>
-The code uses a variant of the standard DIMACS convention (<a href="https://web.archive.org/web/20190325181937/https://www.satcompetition.org/2009/format-benchmarks2009.html">https://web.archive.org/web/20190325181937/https://www.satcompetition.org/2009/format-benchmarks2009.html</a>): a variable is a positive integer, and a literal is 3 (meaning &ldquo;x3 is true&rdquo;) or -3 (meaning &ldquo;x3 is false&rdquo;)
+The code uses a variant of the standard DIMACS convention (<a href="https://web.archive.org/web/20190325181937/https://www.satcompetition.org/2009/format-benchmarks2009.html">https://web.archive.org/web/20190325181937/https://www.satcompetition.org/2009/format-benchmarks2009.html</a>): a variable is a positive integer, and a literal is 3 (meaning &ldquo;x<sub>3</sub> is <code>true</code>&rdquo;) or -3 (meaning &ldquo;x<sub>3</sub> is <code>false</code>&rdquo;)
 </p>
 
 <div class="org-src-container">
@@ -87,7 +87,7 @@ The code uses a variant of the standard DIMACS convention (<a href="https://web.
 </div>
 
 <p>
-A Clause is a connection of 2 literals, do not be confused by a vec!, it is always just 2 elements (TODO: proof-check) so it is Literal1 \/ Literal2 \/ Literal3:
+A Clause is a connection of 2 literals, do not be confused by a vec!, it is always just 2 elements (TODO: proof-check) so it is Literal<sub>1</sub> &or; Literal<sub>2</sub> &or; Literal<sub>3</sub>:
 </p>
 
 <div class="org-src-container">
@@ -97,7 +97,7 @@ A Clause is a connection of 2 literals, do not be confused by a vec!, it is alwa
 
 
 <p>
-A final element we need is a Formula - this is the whole expression we want to check Clause1 /\ Clause2 /\ Clause3:
+A final element we need is a Formula - this is the whole expression we want to check Clause<sub>1</sub> &and; Clause<sub>2</sub> &and; Clause<sub>3</sub>:
 </p>
 
 <div class="org-src-container">
@@ -107,11 +107,11 @@ A final element we need is a Formula - this is the whole expression we want to c
 
 
 <p>
-Okay, so we have our Literals, Clauses and Formula! How to proceed? Two boundary facts drive the entire algorithm. A formula with no clauses is true, because there is nothing left to satisfy (an AND over zero things is true). A clause with no literals is false, because there is no way left to satisfy it (an OR over zero things is false). The solver is engineered so that every step pushes the formula toward one of these two ends: shrink to nothing (SAT) or produce an empty clause (conflict).
+Okay, so we have our Literals, Clauses and Formula! How to proceed? Two boundary facts drive the entire algorithm. A formula with no clauses is <code>true</code>, because there is nothing left to satisfy (an AND over zero things is <code>true</code>). A clause with no literals is <code>false</code>, because there is no way left to satisfy it (an OR over zero things is <code>false</code>). The solver is engineered so that every step pushes the formula toward one of these two ends: shrink to nothing (SAT) or produce an empty clause (conflict).
 </p>
 
 <p>
-First function we will need is an assign function, this function will pick a literal make it true and simplify the formulat accordingly (this is sometimes called conditioning)
+First function we will need is an assign function, this function will pick a literal make it <code>true</code> and simplify the formulat accordingly (this is sometimes called conditioning)
 </p>
 
 <div class="org-src-container">
@@ -122,7 +122,8 @@ First function we will need is an assign function, this function will pick a lit
         <span class="org-keyword">if</span> clause.contains(<span class="org-rust-ampersand">&amp;</span>literal) {
             <span class="org-keyword">continue</span>; <span class="org-comment-delimiter">// </span><span class="org-comment">clause satisfied, remove it entirely
 </span>        }
-        <span class="org-keyword">let</span> <span class="org-variable-name">reduced</span>: <span class="org-type">Clause</span> = clause.iter().copied().filter(|<span class="org-rust-ampersand">&amp;</span>l| l != -literal).collect();
+        <span class="org-keyword">let</span> <span class="org-variable-name">reduced</span>: <span class="org-type">Clause</span> =
+            clause.iter().copied().filter(|<span class="org-rust-ampersand">&amp;</span>l| l != -literal).collect();
         <span class="org-keyword">if</span> reduced.is_empty() {
             <span class="org-keyword">return</span> <span class="org-type">None</span>; <span class="org-comment-delimiter">// </span><span class="org-comment">every literal in this clause is false: conflict
 </span>        }
@@ -134,44 +135,54 @@ First function we will need is an assign function, this function will pick a lit
 </div>
 
 <p>
-Making literal true has exactly two consequences. Any clause containing literal is now satisfied, so it disappears from the formula entirely. Any clause containing the opposite literal -lit can no longer be satisfied through it, so that literal gets deleted from the clause — the clause survives, but shrunken. If that deletion removes a clause&rsquo;s last literal, we&rsquo;ve falsified the clause and assign returns None to signal a conflict. A useful invariant falls out of this: assign never outputs an empty clause (it returns None instead), so inside the search every clause always has at least one literal.
+Making literal <code>true</code> has exactly two consequences. Any clause containing literal is now satisfied, so it disappears from the formula entirely. Any clause containing the opposite literal -lit can no longer be satisfied through it, so that literal gets deleted from the clause — the clause survives, but shrunken. If that deletion removes a clause&rsquo;s last literal, we&rsquo;ve falsified the clause and assign returns None to signal a conflict. A useful invariant falls out of this: assign never outputs an empty clause (it returns None instead), so inside the search every clause always has at least one literal.
 </p>
 
 <p>
-Let me illustrate this with an example: (x1 \/ x2) <i>\ (x3 \</i> x4) <i>\ (-x2 \</i> x5):
+Let me illustrate this with an example: <span class="formula">(x<sub>1</sub> &or; x<sub>2</sub>) &and; (x<sub>3</sub> &or; x<sub>4</sub>) &and; (&not;x<sub>1</sub> &or; x<sub>5</sub>)</span>:
 </p>
 
 <p>
-Let&rsquo;s pick x1 and make it true: (true \/ x2) <i>\ (x3 \</i> x4) <i>\ (-x2 \</i> x5)
-Now we can remove clause 1! Why? because inside the clause we always use \/, and only one true is enough to convert whole clause into the true!
+Let&rsquo;s pick x<sub>1</sub> and make it <code>true</code>: <span class="formula">(true &or; x<sub>2</sub>) &and; (x<sub>3</sub> &or; x<sub>4</sub>) &and; (&not;x<sub>1</sub> &or; x<sub>5</sub>)</span>
+Now we can remove clause 1! Why? because inside the clause we always use &or;, and only one <code>true</code> is enough to convert whole clause into the <code>true</code>!
 </p>
 
 <p>
-So, we are left with (x3 \/ x4) <i>\ (-x1 \</i> x5)
-We removed all the clauses with x1, but we didn&rsquo;t touch -x1 clauses yet (because in DIMACS notation we searched for 1, but we didn&rsquo;t search for -1). We are doing it now in reduced action.
+So, we are left with <span class="formula">(x<sub>3</sub> &or; x<sub>4</sub>) &and; (&not;x<sub>1</sub> &or; x<sub>5</sub>)</span>
 </p>
 
 <p>
-(x3 \/ x4) <i>\ (-x1 \</i> x5)
-               ^ here is our -x1!
+We removed all the clauses with x<sub>1</sub>, but we didn&rsquo;t touch &not;x<sub>1</sub> clauses yet (because in DIMACS notation we searched for 1, but we didn&rsquo;t search for -1). We are doing it now in the <code>reduced</code> action.
+</p>
+
+<pre class="example" id="org4d50033">
+(x3 ∨ x4) ∧ (¬x1 ∨ x5)
+             ^ here is our ¬x1!
+</pre>
+
+<p>
+Now the logic is this one, we already picked x<sub>1</sub> as a <code>true</code> and simplified the whole formula based on the fact it is <code>true</code>. So we cannot just repick <code>false</code> easily. It means that &not;x<sub>1</sub> is gonna be <code>false</code> in this clause and <code>false</code> cannot help us to convert clause to <code>true</code>, so we remove it (think through, why do we do this?).
 </p>
 
 <p>
-Now the logic is this one, we already picked x1 as a true and simplified the whole formula based on the fact it is true. So we cannot just repick false easily. It means that -x1 is gonna be false in this clause and false cannot help us to convert clause to true, so we remove it (think through, why do we do this?).
+Now we will do an extra check, let&rsquo;s look at our simplified formula:
+</p>
+
+<pre class="example" id="org3e6d3c0">
+(x3 ∨ x4) ∧ (x5)
+             ^ this clause is still not empty, we can continue
+</pre>
+
+<p>
+If it would be empty - there would be no way for us to make it <code>true</code>, because it would mean that &not;x<sub>1</sub> was the last literal there and it was converted to <code>false</code>! So in this case we return <code>None</code> and it means that we were wrong about our assumption that x<sub>1</sub> should be <code>true</code>. Maybe we should try x<sub>2</sub>?
 </p>
 
 <p>
-Now we will do an extra check, let&rsquo;s look at our formula with simplified formula (x3 \/ x4) /\ (x5)
-                                                                                                ^ this clause is still not empty, we can continue
-If it would be empty - there would be no way for us to make it true, because it would mean that -x1 was the last literal there and it was converted to false! So in this case we return None and it means that we were wrong about our assumption that x1 should be true. Maybe we should try x2?
+One important thing to notice here is that our function does not differentiate between x<sub>1</sub> and &not;x<sub>1</sub>. What I mean by that is that this function idea is to set literal to <code>true</code>, and it could be x<sub>1</sub> literal and &not;x<sub>1</sub> literal. In case caller will ask us to set &not;x<sub>1</sub> to <code>true</code>, we will use <code>-literal</code> to get x<sub>1</sub>. So, <code>-literal</code> in the code above is not transforming x<sub>1</sub> to &not;x<sub>1</sub>, it could also transform &not;x<sub>1</sub> to x<sub>1</sub> (so it is not negation, but reversal).
 </p>
 
 <p>
-One important thing to notice here is that our function does not differentiate between x1 and -x1. What I mean by that is that this function idea is to set literal to true, and it could be x1 literal and -x1 literal. In case caller will ask us to set -x1 to true, we will use -literal to get x1. So, -literal in the code above is not transforming x1 to -x1, it could also transform -x1 to x1 (so it is not negation, but reversal).
-</p>
-
-<p>
-Okay, that is not a complex code right? Let&rsquo;s remember the idea of this function and move forward. What is the idea? To receive Formula and Literal, assume Literal to be true, and simplify formula!
+Okay, that is not a complex code right? Let&rsquo;s remember the idea of this function and move forward. What is the idea? To receive Formula and Literal, assume Literal to be <code>true</code>, and simplify formula!
 </p>
 
 
@@ -179,12 +190,12 @@ Okay, that is not a complex code right? Let&rsquo;s remember the idea of this fu
 To implement our next function we will need a HashMap datastructure from a standard library. In our Model we will store the chosen literal and the value we choose for this literal. So it will look something like this:
 </p>
 
-<p>
+<pre class="example" id="org22867fb">
 x1: true
 x2: true
 x3: false
 x4: true
-</p>
+</pre>
 
 <div class="org-src-container">
 <pre class="src src-rust"><span class="org-keyword">use</span> <span class="org-constant">std</span>::<span class="org-constant">collections</span>::<span class="org-type">HashMap</span>;
@@ -217,7 +228,9 @@ x4: true
                 <span class="org-keyword">let</span> <span class="org-keyword">mut</span> <span class="org-variable-name">m</span> = model.clone(); <span class="org-comment-delimiter">// </span><span class="org-comment">clone so backtracking forgets it
 </span>
                 m.insert(choice.unsigned_abs(), choice &gt; 0);
-                <span class="org-keyword">if</span> <span class="org-keyword">let</span> <span class="org-type">Some</span>(sat) = dpll(reduced_formula, m, depth + 1) { <span class="org-keyword">return</span> <span class="org-type">Some</span>(sat); }
+                <span class="org-keyword">if</span> <span class="org-keyword">let</span> <span class="org-type">Some</span>(sat) = dpll(reduced_formula, m, depth + 1) {
+                    <span class="org-keyword">return</span> <span class="org-type">Some</span>(sat);
+                }
             }
             _ =&gt; <span class="org-rust-builtin-formatting-macro">println!</span>(<span class="org-string">"CONFLICT: a clause became empty"</span>),
         }
@@ -232,7 +245,7 @@ It is a long function, let&rsquo;s dissect it with an example
 </p>
 
 <p>
-(x1 \/ x2) <i>\ (x3 \</i> x4) <i>\ (-x2 \</i> x5)
+<span class="formula">(x<sub>1</sub> &or; x<sub>2</sub>) &and; (x<sub>3</sub> &or; x<sub>4</sub>) &and; (&not;x<sub>1</sub> &or; x<sub>5</sub>)</span>
 </p>
 
 <p>
@@ -240,16 +253,20 @@ Our Model table is empty at first, our Formula is above and depth is 0.
 </p>
 
 <p>
-What we do at the Step 1 is we are looking for something like this (-x1) or (x1). We are going to call this unit, because it&rsquo;s the sole literal of a unit clause, which is the established name for a clause containing exactly one literal - &ldquo;unit&rdquo; in the sense of unit size, like &ldquo;unit interval&rdquo; or &ldquo;unit vector.&rdquo; The literal inside is called the unit literal, or colloquially just &ldquo;the unit,&rdquo; and the whole loop implements unit propagation (also called Boolean constraint propagation, or BCP, in the literature). The terminology goes back to the original Davis–Putnam work in 1960, where satisfying single-literal clauses was one of the named rules, and it has been the standard vocabulary ever since.
+What we do at the Step 1 is we are looking for something like this <span class="formula">(&not;x<sub>1</sub>)</span> or <span class="formula">(x<sub>1</sub>)</span>. We are going to call this unit, because it&rsquo;s the sole literal of a unit clause, which is the established name for a clause containing exactly one literal - &ldquo;unit&rdquo; in the sense of unit size, like &ldquo;unit interval&rdquo; or &ldquo;unit vector.&rdquo; The literal inside is called the unit literal, or colloquially just &ldquo;the unit,&rdquo; and the whole loop implements unit propagation (also called Boolean constraint propagation, or BCP, in the literature). The terminology goes back to the original Davis–Putnam work in 1960, where satisfying single-literal clauses was one of the named rules, and it has been the standard vocabulary ever since.
 </p>
 
 <p>
 Okay, if we find this unit what we do?
-model.insert(unit.unsigned_abs(), unit &gt; 0);
 </p>
 
+<div class="org-src-container">
+<pre class="src src-rust">model.insert(unit.unsigned_abs(), unit &gt; 0);
+</pre>
+</div>
+
 <p>
-If we think in the DIMAC encoding our unit literal is 1 for x1 and -1 for -x1. As you remember - the whole goal we are trying to reach is to convert whole formula to true. So if we see (x1) we understand that it should be true to convert this clause to true. If we see (-x1) than x1 should be false, to convert clause to true!
+If we think in the DIMACS encoding our unit literal is 1 for x<sub>1</sub> and -1 for &not;x<sub>1</sub>. As you remember - the whole goal we are trying to reach is to convert whole formula to <code>true</code>. So if we see <span class="formula">(x<sub>1</sub>)</span> we understand that it should be <code>true</code> to convert this clause to <code>true</code>. If we see <span class="formula">(&not;x<sub>1</sub>)</span> then x<sub>1</sub> should be <code>false</code>, to convert clause to <code>true</code>!
 </p>
 
 <p>
@@ -261,7 +278,7 @@ Next step is crucial, we call our assign function we just implemented above! Do 
 </p>
 
 <p>
-Step 2 is easy, if our formula was reduced to an empty formula () - than we converted everything to TRUE, so we reached our goal, yay!!! We can return Model (our table with values of Literals) to the caller - this is the combination that works! Could it be, that there are multiple combinations that work? Yes, we will return the first one we found, but later when you develop SMT-solver you will see why it is nice to have more than 1 solution to the problem.
+Step 2 is easy, if our formula was reduced to an empty formula () - than we converted everything to <code>true</code>, so we reached our goal, yay!!! We can return Model (our table with values of Literals) to the caller - this is the combination that works! Could it be, that there are multiple combinations that work? Yes, we will return the first one we found, but later when you develop SMT-solver you will see why it is nice to have more than 1 solution to the problem.
 </p>
 
 
@@ -287,8 +304,13 @@ Let&rsquo;s try to wire our functions together and run? We just want to add more
 
 
 <p>
-To run this example we need to install external rust libraries, unfortunetally we are not using std lib only. The <code>:crates</code> babel header below tells rustic-babel to add them to the generated Cargo.toml, so the block is runnable as-is; if you are following along in your own project, <code>cargo add log env_logger</code> does the same thing.
+To run this example we need to install two external rust libraries, unfortunetally we are not using std lib only. Add them to your project with:
 </p>
+
+<div class="org-src-container">
+<pre class="src src-shell">cargo add log env_logger
+</pre>
+</div>
 
 <div class="org-src-container">
 <pre class="src src-rust"><span class="org-comment-delimiter">// </span><span class="org-comment">DPLL SAT solver with the step-by-step trace routed through the `log` crate.
@@ -322,7 +344,8 @@ To run this example we need to install external rust libraries, unfortunetally w
         <span class="org-keyword">if</span> clause.contains(<span class="org-rust-ampersand">&amp;</span>literal) {
             <span class="org-keyword">continue</span>; <span class="org-comment-delimiter">// </span><span class="org-comment">clause satisfied, remove it entirely
 </span>        }
-        <span class="org-keyword">let</span> <span class="org-variable-name">reduced</span>: <span class="org-type">Clause</span> = clause.iter().copied().filter(|<span class="org-rust-ampersand">&amp;</span>l| l != -literal).collect();
+        <span class="org-keyword">let</span> <span class="org-variable-name">reduced</span>: <span class="org-type">Clause</span> =
+            clause.iter().copied().filter(|<span class="org-rust-ampersand">&amp;</span>l| l != -literal).collect();
         <span class="org-keyword">if</span> reduced.is_empty() {
             <span class="org-keyword">return</span> <span class="org-type">None</span>; <span class="org-comment-delimiter">// </span><span class="org-comment">every literal in this clause is false: conflict
 </span>        }
@@ -337,7 +360,8 @@ To run this example we need to install external rust libraries, unfortunetally w
     <span class="org-comment-delimiter">// </span><span class="org-comment">Step 1 &#8212; unit propagation.
 </span>    <span class="org-keyword">while</span> <span class="org-keyword">let</span> <span class="org-type">Some</span>(unit) = formula.iter().find(|c| c.len() == 1).map(|c| c[0]) {
         model.insert(unit.unsigned_abs(), unit &gt; 0);
-        <span class="org-preprocessor">debug!</span>(<span class="org-string">"{pad}unit clause ({}) forces {}"</span>, lit_str(unit), assign_str(unit));
+        <span class="org-keyword">let</span> (l, a) = (lit_str(unit), assign_str(unit));
+        <span class="org-preprocessor">debug!</span>(<span class="org-string">"{pad}unit clause ({l}) forces {a}"</span>);
         <span class="org-keyword">match</span> assign(<span class="org-rust-ampersand">&amp;</span>formula, unit) {
             <span class="org-type">Some</span>(reduced_formula) =&gt; formula = reduced_formula,
             <span class="org-type">None</span> =&gt; {
@@ -397,7 +421,8 @@ To run this example we need to install external rust libraries, unfortunetally w
 <span class="org-keyword">fn</span> <span class="org-function-name">model_str</span>(<span class="org-variable-name">m</span>: <span class="org-rust-ampersand">&amp;</span><span class="org-type">Model</span>) -&gt; <span class="org-type">String</span> {
     <span class="org-keyword">let</span> <span class="org-keyword">mut</span> <span class="org-variable-name">vars</span>: <span class="org-type">Vec</span>&lt;(<span class="org-type">u32</span>, <span class="org-type">bool</span>)&gt; = m.iter().map(|(v, b)| (*v, *b)).collect();
     vars.sort();
-    <span class="org-keyword">let</span> <span class="org-variable-name">parts</span>: <span class="org-type">Vec</span>&lt;<span class="org-type">String</span>&gt; = vars.into_iter().map(|(v, b)| <span class="org-rust-builtin-formatting-macro">format!</span>(<span class="org-string">"x</span><span class="org-rust-string-interpolation">{v}</span><span class="org-string">=</span><span class="org-rust-string-interpolation">{b}</span><span class="org-string">"</span>)).collect();
+    <span class="org-keyword">let</span> <span class="org-variable-name">parts</span>: <span class="org-type">Vec</span>&lt;<span class="org-type">String</span>&gt; =
+        vars.into_iter().map(|(v, b)| <span class="org-rust-builtin-formatting-macro">format!</span>(<span class="org-string">"x</span><span class="org-rust-string-interpolation">{v}</span><span class="org-string">=</span><span class="org-rust-string-interpolation">{b}</span><span class="org-string">"</span>)).collect();
     <span class="org-rust-builtin-formatting-macro">format!</span>(<span class="org-string">"{{</span><span class="org-rust-string-interpolation">{}</span><span class="org-string">}}"</span>, parts.join(<span class="org-string">", "</span>))
 }
 
@@ -424,7 +449,8 @@ To run this example we need to install external rust libraries, unfortunetally w
 </span>    <span class="org-comment-delimiter">// </span><span class="org-comment">prefix so that the trace output is byte-identical to the old
 </span>    <span class="org-comment-delimiter">// </span><span class="org-comment">println! trace &#8212; delete it to get the standard prefixed format back.
 </span>    <span class="org-comment-delimiter">// </span><span class="org-comment">Logs go to stderr by default; .target keeps everything on stdout.
-</span>    <span class="org-constant">env_logger</span>::<span class="org-type">Builder</span>::from_env(<span class="org-constant">env_logger</span>::<span class="org-type">Env</span>::default().default_filter_or(<span class="org-string">"trace"</span>))
+</span>    <span class="org-keyword">let</span> <span class="org-variable-name">env</span> = <span class="org-constant">env_logger</span>::<span class="org-type">Env</span>::default().default_filter_or(<span class="org-string">"trace"</span>);
+    <span class="org-constant">env_logger</span>::<span class="org-type">Builder</span>::from_env(env)
         .target(<span class="org-constant">env_logger</span>::<span class="org-type">Target</span>::<span class="org-type">Stdout</span>)
         .format(|buf, record| <span class="org-rust-builtin-formatting-macro">writeln!</span>(buf, <span class="org-string">"</span><span class="org-rust-string-interpolation">{}</span><span class="org-string">"</span>, record.args()))
         .init();
@@ -466,12 +492,38 @@ In the code above I added pretty-printers for different structures (you can safe
 </p>
 
 <p>
-(x1 ∨ x2) ∧ (¬x1 ∨ x3) ∧ (¬x1 ∨ ¬x3) ∧ (¬x2 ∨ x3)
+<span class="formula">(x<sub>1</sub> &or; x<sub>2</sub>) &and; (&not;x<sub>1</sub> &or; x<sub>3</sub>) &and; (&not;x<sub>1</sub> &or; &not;x<sub>3</sub>) &and; (&not;x<sub>2</sub> &or; x<sub>3</sub>)</span>
 </p>
 
 <p>
 Does this expression has a soluion? We can run SAT-solver to figure this out!
 </p>
+
+<pre class="example" id="orge3fb278">
+input: (x1 ∨ x2) ∧ (¬x1 ∨ x3) ∧ (¬x1 ∨ ¬x3) ∧ (¬x2 ∨ x3)
+
+decide x1 = true (guess)
+assignment: {x1=true}
+formula:    (x3) ∧ (¬x3) ∧ (¬x2 ∨ x3)
+    unit clause (x3) forces x3 = true
+    CONFLICT: a clause became empty
+backtrack: undo x1 = true
+decide x1 = false (guess)
+assignment: {x1=false}
+formula:    (x2) ∧ (¬x2 ∨ x3)
+    unit clause (x2) forces x2 = true
+    assignment: {x1=false, x2=true}
+    formula:    (x3)
+    unit clause (x3) forces x3 = true
+    assignment: {x1=false, x2=true, x3=true}
+    formula:    &lt;no clauses left&gt;
+    SATISFIED: no clauses remain
+
+RESULT: SATISFIABLE
+  x1 = false
+  x2 = true
+  x3 = true
+</pre>
 
 <p>
 I want comment much on the trace above, as it is quite detailed by itself, now you have all the pieces to understand the basic SAT-solver design and I hope you can see that in it&rsquo;s core it is quite a basic idea! More complexity will come with SMT-solver, but this is a topic for another article! Stay healthy and motivated, see you!

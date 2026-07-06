@@ -2,6 +2,7 @@
 #+date: <2026-07-06>
 #+subtitle: July 6, 2026
 
+Hello, my dear friend, today I want walk together with you through a fanta
 Good news is that if something in this article is not detailed enough or confusing, you can work with LLM assistant to figure this out. Research shows that any modern LLM is good enough to develop SMT-solver from scratch.
 LLM2SMT: Building an SMT Solver with Zero Human-Written Code https://arxiv.org/pdf/2603.06931
 
@@ -15,12 +16,15 @@ Though I assume if you use such a language you know those tricks.
 
 First, let's create a new Cargo project, where we will implement our SAT-solver.
 
+#+begin_example
 smt-rs git:(main) cargo init
     Creating binary (application) package
 note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+#+end_example
 
+I will not refer to this cargo project much in the article, what you can do is to copy final code we will have into the main.rs file and run it. This way you will receive the same output I will show in this article, and you can also play around with different inputs!
 
-Before we write some code, let's figure out what SAT-solver should do. SAT asks: given a Boolean formula over variables x1, x2, …, is there a true/false assignment that makes the whole formula true?
+Before we write some code, let's figure out what SAT-solver should do. SAT asks: given a Boolean formula over variables x_{1}, x_{2}, …, is there an assignment of =true= and =false= values that makes the whole formula =true=?
 
 Solvers work on formulas in conjunctive normal form (https://en.wikipedia.org/wiki/Conjunctive_normal_form) (CNF) - an AND of clauses, where each clause is an OR of literals, and a literal is a variable or its negation.
 
@@ -28,34 +32,34 @@ Any Boolean formula can be converted to CNF, so this loses no generality.
 
 We will implement DPLL (Davis–Putnam–Logemann–Loveland, 1962), which is the simplest thing anyone would actually call a SAT solver — it's brute-force backtracking plus exactly two ideas: simplify the formula after every assignment, and never guess when a value is forced. It's also the skeleton that every modern solver is still built on.
 
-You might be a bit confused by terms like ``forced`` ``CNF`` and a few other ideas. This is quite normal and we will elaborate on every topic later, because it is easier to understand SAT from a practical example that a theory. Later, after finishing this article you can get back to those first paragraphs and it will be cristally clear to you.
+You might be a bit confused by terms like =forced= and =CNF= and a few other ideas. This is quite normal and we will elaborate on every topic later, because it is easier to understand SAT from a practical example that a theory. Later, after finishing this article you can get back to those first paragraphs and it will be cristally clear to you.
 
 So let me show you some pieces of code.
 
 
-The code uses a variant of the standard DIMACS convention (https://web.archive.org/web/20190325181937/https://www.satcompetition.org/2009/format-benchmarks2009.html): a variable is a positive integer, and a literal is 3 (meaning "x3 is true") or -3 (meaning "x3 is false")
+The code uses a variant of the standard DIMACS convention (https://web.archive.org/web/20190325181937/https://www.satcompetition.org/2009/format-benchmarks2009.html): a variable is a positive integer, and a literal is 3 (meaning "x_{3} is =true=") or -3 (meaning "x_{3} is =false=")
 
 #+begin_src rust
 type Literal = i32;
 #+end_src
 
-A Clause is a connection of 2 literals, do not be confused by a vec!, it is always just 2 elements (TODO: proof-check) so it is Literal1 \/ Literal2 \/ Literal3:
+A Clause is a connection of 2 literals, do not be confused by a vec!, it is always just 2 elements (TODO: proof-check) so it is Literal_{1} \lor{} Literal_{2} \lor{} Literal_{3}:
 
 #+begin_src rust
 type Clause = vec![Literal];
 #+end_src
 
 
-A final element we need is a Formula - this is the whole expression we want to check Clause1 /\ Clause2 /\ Clause3:
+A final element we need is a Formula - this is the whole expression we want to check Clause_{1} \land{} Clause_{2} \land{} Clause_{3}:
 
 #+begin_src rust
 type Formula = vec![Clause];
 #+end_src
 
 
-Okay, so we have our Literals, Clauses and Formula! How to proceed? Two boundary facts drive the entire algorithm. A formula with no clauses is true, because there is nothing left to satisfy (an AND over zero things is true). A clause with no literals is false, because there is no way left to satisfy it (an OR over zero things is false). The solver is engineered so that every step pushes the formula toward one of these two ends: shrink to nothing (SAT) or produce an empty clause (conflict).
+Okay, so we have our Literals, Clauses and Formula! How to proceed? Two boundary facts drive the entire algorithm. A formula with no clauses is =true=, because there is nothing left to satisfy (an AND over zero things is =true=). A clause with no literals is =false=, because there is no way left to satisfy it (an OR over zero things is =false=). The solver is engineered so that every step pushes the formula toward one of these two ends: shrink to nothing (SAT) or produce an empty clause (conflict).
 
-First function we will need is an assign function, this function will pick a literal make it true and simplify the formulat accordingly (this is sometimes called conditioning)
+First function we will need is an assign function, this function will pick a literal make it =true= and simplify the formulat accordingly (this is sometimes called conditioning)
 
 #+begin_src rust
 fn assign(formula: &Formula, literal: Literal) -> Option<Formula> {
@@ -65,7 +69,8 @@ fn assign(formula: &Formula, literal: Literal) -> Option<Formula> {
         if clause.contains(&literal) {
             continue; // clause satisfied, remove it entirely
         }
-        let reduced: Clause = clause.iter().copied().filter(|&l| l != -literal).collect();
+        let reduced: Clause =
+            clause.iter().copied().filter(|&l| l != -literal).collect();
         if reduced.is_empty() {
             return None; // every literal in this clause is false: conflict
         }
@@ -75,36 +80,46 @@ fn assign(formula: &Formula, literal: Literal) -> Option<Formula> {
 }
 #+end_src
 
-Making literal true has exactly two consequences. Any clause containing literal is now satisfied, so it disappears from the formula entirely. Any clause containing the opposite literal -lit can no longer be satisfied through it, so that literal gets deleted from the clause — the clause survives, but shrunken. If that deletion removes a clause's last literal, we've falsified the clause and assign returns None to signal a conflict. A useful invariant falls out of this: assign never outputs an empty clause (it returns None instead), so inside the search every clause always has at least one literal.
+Making literal =true= has exactly two consequences. Any clause containing literal is now satisfied, so it disappears from the formula entirely. Any clause containing the opposite literal -lit can no longer be satisfied through it, so that literal gets deleted from the clause — the clause survives, but shrunken. If that deletion removes a clause's last literal, we've falsified the clause and assign returns None to signal a conflict. A useful invariant falls out of this: assign never outputs an empty clause (it returns None instead), so inside the search every clause always has at least one literal.
 
-Let me illustrate this with an example: (x1 \/ x2) /\ (x3 \/ x4) /\ (-x2 \/ x5):
+Let me illustrate this with an example: {{{f((x_{1} \lor{} x_{2}) \land{} (x_{3} \lor{} x_{4}) \land{} (\neg{}x_{1} \lor{} x_{5}))}}}:
 
-Let's pick x1 and make it true: (true \/ x2) /\ (x3 \/ x4) /\ (-x2 \/ x5)
-Now we can remove clause 1! Why? because inside the clause we always use \/, and only one true is enough to convert whole clause into the true!
+Let's pick x_{1} and make it =true=: {{{f((true \lor{} x_{2}) \land{} (x_{3} \lor{} x_{4}) \land{} (\neg{}x_{1} \lor{} x_{5}))}}}
+Now we can remove clause 1! Why? because inside the clause we always use \lor{}, and only one =true= is enough to convert whole clause into the =true=!
 
-So, we are left with (x3 \/ x4) /\ (-x1 \/ x5)
-We removed all the clauses with x1, but we didn't touch -x1 clauses yet (because in DIMACS notation we searched for 1, but we didn't search for -1). We are doing it now in reduced action.
+So, we are left with {{{f((x_{3} \lor{} x_{4}) \land{} (\neg{}x_{1} \lor{} x_{5}))}}}
 
-(x3 \/ x4) /\ (-x1 \/ x5)
-               ^ here is our -x1!
+We removed all the clauses with x_{1}, but we didn't touch \neg{}x_{1} clauses yet (because in DIMACS notation we searched for 1, but we didn't search for -1). We are doing it now in the =reduced= action.
 
-Now the logic is this one, we already picked x1 as a true and simplified the whole formula based on the fact it is true. So we cannot just repick false easily. It means that -x1 is gonna be false in this clause and false cannot help us to convert clause to true, so we remove it (think through, why do we do this?).
+#+begin_example
+(x3 ∨ x4) ∧ (¬x1 ∨ x5)
+             ^ here is our ¬x1!
+#+end_example
 
-Now we will do an extra check, let's look at our formula with simplified formula (x3 \/ x4) /\ (x5)
-                                                                                                ^ this clause is still not empty, we can continue
-If it would be empty - there would be no way for us to make it true, because it would mean that -x1 was the last literal there and it was converted to false! So in this case we return None and it means that we were wrong about our assumption that x1 should be true. Maybe we should try x2?
+Now the logic is this one, we already picked x_{1} as a =true= and simplified the whole formula based on the fact it is =true=. So we cannot just repick =false= easily. It means that \neg{}x_{1} is gonna be =false= in this clause and =false= cannot help us to convert clause to =true=, so we remove it (think through, why do we do this?).
 
-One important thing to notice here is that our function does not differentiate between x1 and -x1. What I mean by that is that this function idea is to set literal to true, and it could be x1 literal and -x1 literal. In case caller will ask us to set -x1 to true, we will use -literal to get x1. So, -literal in the code above is not transforming x1 to -x1, it could also transform -x1 to x1 (so it is not negation, but reversal).
+Now we will do an extra check, let's look at our simplified formula:
 
-Okay, that is not a complex code right? Let's remember the idea of this function and move forward. What is the idea? To receive Formula and Literal, assume Literal to be true, and simplify formula!
+#+begin_example
+(x3 ∨ x4) ∧ (x5)
+             ^ this clause is still not empty, we can continue
+#+end_example
+
+If it would be empty - there would be no way for us to make it =true=, because it would mean that \neg{}x_{1} was the last literal there and it was converted to =false=! So in this case we return =None= and it means that we were wrong about our assumption that x_{1} should be =true=. Maybe we should try x_{2}?
+
+One important thing to notice here is that our function does not differentiate between x_{1} and \neg{}x_{1}. What I mean by that is that this function idea is to set literal to =true=, and it could be x_{1} literal and \neg{}x_{1} literal. In case caller will ask us to set \neg{}x_{1} to =true=, we will use =-literal= to get x_{1}. So, =-literal= in the code above is not transforming x_{1} to \neg{}x_{1}, it could also transform \neg{}x_{1} to x_{1} (so it is not negation, but reversal).
+
+Okay, that is not a complex code right? Let's remember the idea of this function and move forward. What is the idea? To receive Formula and Literal, assume Literal to be =true=, and simplify formula!
 
 
 To implement our next function we will need a HashMap datastructure from a standard library. In our Model we will store the chosen literal and the value we choose for this literal. So it will look something like this:
 
+#+begin_example
 x1: true
 x2: true
 x3: false
 x4: true
+#+end_example
 
 #+begin_src rust
 use std::collections::HashMap;
@@ -136,7 +151,9 @@ fn dpll(mut formula: Formula, mut model: Model, depth: usize) -> Option<Model> {
                 let mut m = model.clone(); // clone so backtracking forgets it
 
                 m.insert(choice.unsigned_abs(), choice > 0);
-                if let Some(sat) = dpll(reduced_formula, m, depth + 1) { return Some(sat); }
+                if let Some(sat) = dpll(reduced_formula, m, depth + 1) {
+                    return Some(sat);
+                }
             }
             _ => println!("CONFLICT: a clause became empty"),
         }
@@ -147,22 +164,25 @@ fn dpll(mut formula: Formula, mut model: Model, depth: usize) -> Option<Model> {
 
 It is a long function, let's dissect it with an example
 
-(x1 \/ x2) /\ (x3 \/ x4) /\ (-x2 \/ x5)
+{{{f((x_{1} \lor{} x_{2}) \land{} (x_{3} \lor{} x_{4}) \land{} (\neg{}x_{1} \lor{} x_{5}))}}}
 
 Our Model table is empty at first, our Formula is above and depth is 0.
 
-What we do at the Step 1 is we are looking for something like this (-x1) or (x1). We are going to call this unit, because it's the sole literal of a unit clause, which is the established name for a clause containing exactly one literal - "unit" in the sense of unit size, like "unit interval" or "unit vector." The literal inside is called the unit literal, or colloquially just "the unit," and the whole loop implements unit propagation (also called Boolean constraint propagation, or BCP, in the literature). The terminology goes back to the original Davis–Putnam work in 1960, where satisfying single-literal clauses was one of the named rules, and it has been the standard vocabulary ever since.
+What we do at the Step 1 is we are looking for something like this {{{f((\neg{}x_{1}))}}} or {{{f((x_{1}))}}}. We are going to call this unit, because it's the sole literal of a unit clause, which is the established name for a clause containing exactly one literal - "unit" in the sense of unit size, like "unit interval" or "unit vector." The literal inside is called the unit literal, or colloquially just "the unit," and the whole loop implements unit propagation (also called Boolean constraint propagation, or BCP, in the literature). The terminology goes back to the original Davis–Putnam work in 1960, where satisfying single-literal clauses was one of the named rules, and it has been the standard vocabulary ever since.
 
 Okay, if we find this unit what we do?
-model.insert(unit.unsigned_abs(), unit > 0);
 
-If we think in the DIMAC encoding our unit literal is 1 for x1 and -1 for -x1. As you remember - the whole goal we are trying to reach is to convert whole formula to true. So if we see (x1) we understand that it should be true to convert this clause to true. If we see (-x1) than x1 should be false, to convert clause to true!
+#+begin_src rust
+model.insert(unit.unsigned_abs(), unit > 0);
+#+end_src
+
+If we think in the DIMACS encoding our unit literal is 1 for x_{1} and -1 for \neg{}x_{1}. As you remember - the whole goal we are trying to reach is to convert whole formula to =true=. So if we see {{{f((x_{1}))}}} we understand that it should be =true= to convert this clause to =true=. If we see {{{f((\neg{}x_{1}))}}} then x_{1} should be =false=, to convert clause to =true=!
 
 So we record the value in the table! The rust line of code above is just a way to do it in a bit more fancy and terse way, you can use pen and paper to check how this line of code behave with different values.
 
 Next step is crucial, we call our assign function we just implemented above! Do you remmeber what it does? It simplifies formula! So we will call it and save simplified formula into our formula ( I will call it reduced formula, but not sure paper used exactly this word (TODO: double check) )
 
-Step 2 is easy, if our formula was reduced to an empty formula () - than we converted everything to TRUE, so we reached our goal, yay!!! We can return Model (our table with values of Literals) to the caller - this is the combination that works! Could it be, that there are multiple combinations that work? Yes, we will return the first one we found, but later when you develop SMT-solver you will see why it is nice to have more than 1 solution to the problem.
+Step 2 is easy, if our formula was reduced to an empty formula () - than we converted everything to =true=, so we reached our goal, yay!!! We can return Model (our table with values of Literals) to the caller - this is the combination that works! Could it be, that there are multiple combinations that work? Yes, we will return the first one we found, but later when you develop SMT-solver you will see why it is nice to have more than 1 solution to the problem.
 
 
 Step 3. In case we don't have an obvious unit clause to simplify like in Step 1, we will just try to guess! We will pick the first literal we see in the formula and try to run assign (reduction) with Literal and with -Literal (reverse of Literal), one of this options should give us a valid reduced formula and we can update our model and repeat dpll call recursively.
@@ -176,7 +196,11 @@ Termination is guaranteed because every call to assign removes the assigned vari
 Let's try to wire our functions together and run? We just want to add more logging, so we can see the execution trace! I will use standard rust logging facilities.
 
 
-To run this example we need to install external rust libraries, unfortunetally we are not using std lib only. The ~:crates~ babel header below tells rustic-babel to add them to the generated Cargo.toml, so the block is runnable as-is; if you are following along in your own project, ~cargo add log env_logger~ does the same thing.
+To run this example we need to install two external rust libraries, unfortunetally we are not using std lib only. Add them to your project with:
+
+#+begin_src shell
+cargo add log env_logger
+#+end_src
 
 #+begin_src rust :crates '((log . "0.4") (env_logger . "0.11"))
 // DPLL SAT solver with the step-by-step trace routed through the `log` crate.
@@ -210,7 +234,8 @@ fn assign(formula: &Formula, literal: Literal) -> Option<Formula> {
         if clause.contains(&literal) {
             continue; // clause satisfied, remove it entirely
         }
-        let reduced: Clause = clause.iter().copied().filter(|&l| l != -literal).collect();
+        let reduced: Clause =
+            clause.iter().copied().filter(|&l| l != -literal).collect();
         if reduced.is_empty() {
             return None; // every literal in this clause is false: conflict
         }
@@ -225,7 +250,8 @@ fn dpll(mut formula: Formula, mut model: Model, depth: usize) -> Option<Model> {
     // Step 1 — unit propagation.
     while let Some(unit) = formula.iter().find(|c| c.len() == 1).map(|c| c[0]) {
         model.insert(unit.unsigned_abs(), unit > 0);
-        debug!("{pad}unit clause ({}) forces {}", lit_str(unit), assign_str(unit));
+        let (l, a) = (lit_str(unit), assign_str(unit));
+        debug!("{pad}unit clause ({l}) forces {a}");
         match assign(&formula, unit) {
             Some(reduced_formula) => formula = reduced_formula,
             None => {
@@ -285,7 +311,8 @@ fn assign_str(l: Literal) -> String {
 fn model_str(m: &Model) -> String {
     let mut vars: Vec<(u32, bool)> = m.iter().map(|(v, b)| (*v, *b)).collect();
     vars.sort();
-    let parts: Vec<String> = vars.into_iter().map(|(v, b)| format!("x{v}={b}")).collect();
+    let parts: Vec<String> =
+        vars.into_iter().map(|(v, b)| format!("x{v}={b}")).collect();
     format!("{{{}}}", parts.join(", "))
 }
 
@@ -312,7 +339,8 @@ fn main() {
     // prefix so that the trace output is byte-identical to the old
     // println! trace — delete it to get the standard prefixed format back.
     // Logs go to stderr by default; .target keeps everything on stdout.
-    env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("trace"))
+    let env = env_logger::Env::default().default_filter_or("trace");
+    env_logger::Builder::from_env(env)
         .target(env_logger::Target::Stdout)
         .format(|buf, record| writeln!(buf, "{}", record.args()))
         .init();
@@ -377,9 +405,35 @@ RESULT: SATISFIABLE
 
 In the code above I added pretty-printers for different structures (you can safely ignore them, they just format the output it has nothing to do with SAT) and also added detailed tracing log to the functions, so now we can run our SAT solver to solve a crazy example:
 
- (x1 ∨ x2) ∧ (¬x1 ∨ x3) ∧ (¬x1 ∨ ¬x3) ∧ (¬x2 ∨ x3)
+{{{f((x_{1} \lor{} x_{2}) \land{} (\neg{}x_{1} \lor{} x_{3}) \land{} (\neg{}x_{1} \lor{} \neg{}x_{3}) \land{} (\neg{}x_{2} \lor{} x_{3}))}}}
 
 Does this expression has a soluion? We can run SAT-solver to figure this out!
+
+#+begin_example
+input: (x1 ∨ x2) ∧ (¬x1 ∨ x3) ∧ (¬x1 ∨ ¬x3) ∧ (¬x2 ∨ x3)
+
+decide x1 = true (guess)
+assignment: {x1=true}
+formula:    (x3) ∧ (¬x3) ∧ (¬x2 ∨ x3)
+    unit clause (x3) forces x3 = true
+    CONFLICT: a clause became empty
+backtrack: undo x1 = true
+decide x1 = false (guess)
+assignment: {x1=false}
+formula:    (x2) ∧ (¬x2 ∨ x3)
+    unit clause (x2) forces x2 = true
+    assignment: {x1=false, x2=true}
+    formula:    (x3)
+    unit clause (x3) forces x3 = true
+    assignment: {x1=false, x2=true, x3=true}
+    formula:    <no clauses left>
+    SATISFIED: no clauses remain
+
+RESULT: SATISFIABLE
+  x1 = false
+  x2 = true
+  x3 = true
+#+end_example
 
 I want comment much on the trace above, as it is quite detailed by itself, now you have all the pieces to understand the basic SAT-solver design and I hope you can see that in it's core it is quite a basic idea! More complexity will come with SMT-solver, but this is a topic for another article! Stay healthy and motivated, see you!
 
